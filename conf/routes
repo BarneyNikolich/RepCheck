@@ -4,6 +4,8 @@
 
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
+POST    /                           controllers.HomeController.submit
+
 GET     /login                      controllers.HomeController.login
 
 # An example controller showing how to use dependency injection

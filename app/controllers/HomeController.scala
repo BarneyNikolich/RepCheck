@@ -26,12 +26,16 @@ class HomeController @Inject() extends Controller {
 //  }
 
   def index = Action {
-    Ok(views.html.index("IT IS WORKING!"))
+    Ok(views.html.index(Userdata.userForm))
   }
 
   def login = Action {
 
     Ok(views.html.loginform(Userdata.userForm))
+  }
+
+  def submit = Action {
+    Ok
   }
 
 }
