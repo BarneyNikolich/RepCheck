@@ -10,6 +10,26 @@ body, html {
     margin: 0px;
 }
 
+.topcorner {
+    position:absolute;
+    top:0;
+    right:0;
+    color: #FFFFFF;
+}
+
+.atag {
+    text-decoration: none;
+    color: #FFFFFF;
+}
+
+.headertxt {
+    margin-top: 00px;
+    margin-right: 20px;
+    font-size: 27px;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
 .marketing {
     padding-top: 50px;
 }

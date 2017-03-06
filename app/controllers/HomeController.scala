@@ -1,8 +1,12 @@
 package controllers
 
 import javax.inject._
-import play.api._
 import play.api.mvc._
+import models._
+import play.api.Play.current
+import play.api.i18n.Messages.Implicits._
+import play.api.mvc.Action
+
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -23,6 +27,11 @@ class HomeController @Inject() extends Controller {
 
   def index = Action {
     Ok(views.html.index("IT IS WORKING!"))
+  }
+
+  def login = Action {
+
+    Ok(views.html.loginform(Userdata.userForm))
   }
 
 }
