@@ -38,4 +38,8 @@ class HomeController @Inject() extends Controller {
     Ok
   }
 
+  def test = Action {
+    Ok(views.html.test())
+  }
+
 }

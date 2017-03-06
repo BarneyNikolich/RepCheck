@@ -9,12 +9,22 @@
   *@
 
 
-  @*<button type="button" data-toggle="modal" data-target="#addu" class="btn btn-primary btn-lg btn-block btn-success">Add Theme</button>*@
+  <style>
+  .modal-header, h4, .close {
+    background-color: #4D97F0;
+    color:white !important;
+    text-align: center;
+    font-size: 30px;
+  }
+  .modal-footer {
+    background-color: #f9f9f9;
+  }
+  </style>
 
 
   <div id="myCarousell" class="jumbotron jumbotron-padding">
     <p class="topcorner headertxt">
-      <a class="atag" href="" data-toggle="modal" data-target="#login" >
+      <a class="atag" href="" data-toggle="modal" data-target="#myModal" >
       Log in
       </a>
     </p>
@@ -27,8 +37,99 @@
   </a>
 
 
+  <div class="container">
+    @*<h2>Modal Login Example</h2>*@
+      @*<!-- Trigger the modal with a button -->*@
+    @*<button type="button" class="btn btn-default btn-lg" id="myBtn">Login</button>*@
+
+      <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+      <div class="modal-dialog">
+
+          <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header" style="padding:35px 50px;">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4><span class="glyphicon glyphicon-lock"></span> Login</h4>
+          </div>
+          <div class="modal-body" style="padding:40px 50px;">
+
+
+          @helper.form(action = routes.HomeController.submit(), args = 'id -> "addthemeform") {
+
+            @if(form.hasGlobalErrors) {
+              <div class="alert alert-error">
+                <a class="close" data-dismiss="alert">×</a>
+                <h1>ERROR MESSAGE</h1>
+              </div>
+            }
+
+
+              <!--Standard text input form. id = textInput. Show constraints shows the field must be filled.-->
+            <span class="glyphicon glyphicon-user"></span>
+            @helper.inputText(
+              form("name"),
+              '_label -> "Username",
+              'placeholder -> "e.g. User123",
+              'span -> "glyphicon glyphicon-user",
+              'class -> "form-control",
+              'required -> "required",
+              '_showConstraints -> false
+            )
+            @*<input class="form-control" placeholder="Password" name="password" type="password" value="" required="">*@
+            <span class="glyphicon glyphicon-eye-open"></span>
+            @helper.inputText(
+              form("password"),
+              '_label -> "Password",
+              'class -> "form-control",
+              'placeholder -> "*****************",
+              'type -> "password",
+              'required -> "required",
+              '_showConstraints -> false
+            )
+
+            <div class="checkbox">
+              <label><input type="checkbox" value="" checked>Remember me</label>
+            </div>
+            <button type="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-off"></span>
+              Login</button>
+
+          </div>
+
+
+          @*</div>*@
+          @*<div class="modal-footer">*@
+          @*<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>*@
+          @*<button type="submit" class="btn btn-primary" id="addb">Login</button>*@
+          @*</div>*@
+
+
+          }
+
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+            <p>Not a member? <a href="#">Sign Up</a></p>
+            <p>Forgot <a href="#">Password?</a></p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  @*<script>*@
+          @*$(document).ready(function(){*@
+            @*$("#myBtn").click(function(){*@
+              @*$("#myModal").modal();*@
+            @*});*@
+          @*});*@
+  @*</script>*@
+
+
+
+
 <!-- Start Model -->
-  <div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="login" aria-hidden="true">
+  <div class="modal fade" id="login" tabindex="-1"  role="dialog" aria-labelledby="login" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -63,6 +164,8 @@
 
           </div>
         <div class="modal-footer">
+          <button type="button"  class="btn btn-default" data-dismiss="modal">Cancel</button>
+
           <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
           <button type="submit" class="btn btn-primary" id="addb">Login</button>
         </div>
