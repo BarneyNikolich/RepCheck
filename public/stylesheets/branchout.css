@@ -1,0 +1,70 @@
+body, html {
+    height: 100%;
+}
+
+.jumbotron {
+    padding-top: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    margin: 0px;
+}
+
+.marketing {
+    padding-top: 50px;
+}
+
+.jumbotron-image {
+    height: 100%;
+    width: 100%;
+}
+
+.blur {
+    filter: blur(5px);
+    -webkit-filter: blur(5px);
+    -moz-filter: blur(5px);
+    -o-filter: blur(5px);
+    -ms-filter: blur(5px);
+}
+
+.heading-image {
+    width: 150px;
+    height: 150px;
+}
+
+.amazon {
+    width: 300px;
+    height: 150px;
+}
+
+.screenshot-image {
+    margin: 0 auto;
+    <!--height: 600px;-->
+}
+
+.indeximg {
+    margin: 0 auto;
+    padding-top: 100px;
+<!--height: 600px;-->
+}
+
+.charts {
+    margin: 0 auto;
+    padding-top: 100px;
+    height: 400px;
+}
+
+.copyright {
+    width: 20px;
+    height: 20px;
+}
+
+
+.arrow-down {
+    margin: auto;
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-top: 50px solid #5B9BD5;
+}

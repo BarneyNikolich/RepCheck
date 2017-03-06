@@ -1,0 +1,117 @@
+@(message: String)
+
+
+@main("Welcome to Play") {
+
+  @*
+  * Get an `Html` object by calling the built-in Play welcome
+  * template and passing a `String` message.
+  *@
+
+
+
+
+  <div id="myCarousell" class="jumbotron jumbotron-padding">
+    <img class="jumbotron-image" src="/assets/images/index/repchecklogo.png" alt="First slide">
+  </div>
+
+  <a href="#container">
+  <div class="arrow-down"></div>
+  </a>
+
+
+  <div id="container" class="container marketing">
+
+      <!-- START THE FEATURETTES -->
+
+    <div class="row featurette">
+      <div class="col-md-7">
+        <h2 class="featurette-heading">Reputation. <span class="text-muted">Almost as important as oxygen.</span></h2>
+        <p class="lead">We understand that reputation is the driving force of e-commerce. </p>
+      </div>
+      <div class="col-md-5">
+          <!-- <img class="featurette-image img-responsive" data-src="holder.js/500x500/auto" alt="Generic placeholder image">-->
+        <img class="featurette-image img-responsive screenshot-image" src="/assets/images/index/trust.png" alt="Trust - image of handshake">
+      </div>
+    </div>
+
+    <hr class="featurette-divider">
+
+    <div class="row featurette">
+      <div class="col-md-5">
+        <img class="featurette-image img-responsive indeximg" src="/assets/images/index/starz.png" alt="Stars">
+      </div>
+      <div class="col-md-7">
+        <h2 class="featurette-heading">Buy with confidence. <span class="text-muted">Browse user-friendly reviews.</span></h2>
+        <p class="lead">Each retailer has a uniquie Repcheck&copy;
+        score, aggregated from numerous sources to provide you with an informed decision. </p>
+      </div>
+    </div>
+
+    <hr class="featurette-divider">
+
+    <div class="row featurette">
+      <div class="col-md-7">
+        <h2 class="featurette-heading">We take reputation from where it exits and put where its needed. <span class="text-muted"></span></h2>
+        <p class="lead">We aim to provide a platform to markets which do not have a central reputation system to convey themselves fairly. We Encourage honesty and promote trust.</p>
+      </div>
+
+      <div class="col-md-5">
+        <img class="featurette-image img-responsive charts" src="/assets/images/index/charts.png" alt="Location based connections">
+      </div>
+
+    </div>
+
+    <hr class="featurette-divider">
+      <!-- /END THE FEATURETTES -->
+    <div class="row">
+      <div class="col-lg-4">
+        <a href="https://www.facebook.com/BranchOutApp" target="_blank"><img class="amazon" src="/assets/images/index/amazon.png" alt="Facebook"></a>
+       <!-- <h2>Like</h2>
+        <p>Like us on Facebook to get regular updates and be part of promotions.</p>
+        <div class="fb-like" data-href="https://www.facebook.com/BranchOutApp" data-width="300" data-layout="standard" data-action="like" data-show-faces="false" data-share="true"></div>
+      -->
+      </div>
+
+      <div class="col-lg-4">
+        <a href="" target="_blank"><img class="amazon" src="/assets/images/index/ebay.png" alt="Twitter"></a>
+       <!-- <h2>Follow</h2>
+        <p>Follow us on Twitter to keep up to date with our day to day activities and see what's going on.</p> -->
+      </div>
+
+      <div class="col-lg-4">
+        <a href="" target="_blank"><img class="heading-image" src="/assets/images/index/fb.png" alt="App Store"></a>
+        <!-- <h2>Download</h2>
+        <p>Download the BranchOut app from the App Store to become part of the community.</p>
+       <!-- <a href="" target="_blank" ><img src="/assets/images/index/amazon.png"></a> -->
+      </div>
+    </div>
+
+    <hr class="featurette-divider">
+
+    <div class="row" style="text-align: center;">
+        @*<a style="margin: auto;" class="twitter-timeline" href="https://twitter.com/barneynikolich" data-widget-id="471406838760472576">Tweets by Barney</a>*@
+        @*<a style="margin: auto;" class="twitter-timeline" href="https://twitter.com/MTNEQUIPMENT" data-widget-id="471406838760472576">Tweets by @@MTNEQUIPMENT</a>*@
+
+
+      <div>
+        <a class="twitter-timeline"
+        href="https://twitter.com/MTNEQUIPMENT"
+        data-width="720" data-height="1000">Tweets by @@MTNEQUIPMENT</a>
+      </div>
+
+
+
+    </div>
+
+    <hr class="featurette-divider">
+      <!-- FOOTER -->
+    <footer>
+      <p class="pull-right"><a href="#">Back to top</a></p>
+      <p>2017 Repcheck &copy; <!-- &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p> -->
+    </footer>
+
+  </div><!-- /.container -->
+
+
+}
