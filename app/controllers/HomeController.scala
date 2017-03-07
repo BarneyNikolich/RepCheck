@@ -39,30 +39,38 @@ class HomeController @Inject() extends Controller {
 
     Userdata.userForm.bindFromRequest.fold(
       formWithErrors => {
+
+        //Maybe handle the errors here and return list of messages!
         println(formWithErrors)
+
         BadRequest(views.html.index(formWithErrors))
       },
       successform => {
-        val formResults = List (
-          successform.username,
-          successform.email,
-          successform.password,
-          successform.confirmpassword
-        )
 
-        println(successform)
-
-        Ok(formResults.toString())
+        //Redirect to specific action - Login or sign up form
+//        LOOK HOW PERTAX FRONTEND HANDLES DATA FROM A FORM
+        successform match {
+          case Userdata(Some(username), _, Some(passwd), _, _) =>
+            val result = List(username, passwd)
+            Redirect(routes.HomeController.processsLoginForm(result)) //Redirect the submit action to the formResults method. This is a post.
+          case _ => Ok("Sign in FORM")
+        }
       }
     )
 
   }
 
+  def processsLoginForm(logindata: List[String]) = Action {
+    for(d <- logindata){
+      println(d)
+    }
 
+    Ok
+  }
 
+  def processSignupForm = Action {
+    Ok
 
-  def test = Action {
-    Ok(views.html.test())
   }
 
 }

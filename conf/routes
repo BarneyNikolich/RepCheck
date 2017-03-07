@@ -6,9 +6,10 @@
 GET     /                           controllers.HomeController.index
 POST    /                           controllers.HomeController.submitform
 
+GET     /login                      controllers.HomeController.processsLoginForm(logindata: List[String])
 
 
-GET     /test                       controllers.HomeController.test
+
 
 GET     /db                         controllers.ScalaControllerInject.index
 

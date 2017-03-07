@@ -22,9 +22,20 @@
   </style>
 
   <div id="myCarousell" class="jumbotron jumbotron-padding">
+
+    <!-- WRITE UTILITY FUNCTION TO RETURN THE CORRECT MESSAGE!! -->
     @if(form.hasErrors) {
       <div class="alert alert-danger nopadding">
-        <strong>Warning!</strong> Something went wrong...
+
+        @for(error <- form.errors) {
+          @if(error.key.equals("email")){
+            <p>There is a problem with <strong>email</strong> validation.</p>
+          } else {
+            <p>Something has gone wrong...</p>
+          }
+        }
+
+
       </div>
       @*<a class="close" data-dismiss="alert">×</a>*@
       @*<h1>@form.errors</h1>*@
@@ -65,7 +76,31 @@
 
 
           @helper.form(action = routes.HomeController.submitform(), args = 'id -> "loginform") {
+              <!-- WRITE UTILITY FUNCTION TO RETURN THE CORRECT MESSAGE!! -->
+            @if(form.hasErrors) {
+              <div class="alert alert-danger nopadding">
 
+              @for(error <- form.errors) {
+                @if(error.key.equals("email")){
+                  <p>There is a problem with <strong>email</strong> validation.</p>
+                } else {
+                  <p>Something has gone wrong...</p>
+                }
+              }
+
+
+                <div class="alert alert-danger" role="alert">
+                @for(error <- form.errors){
+                  <p>@error.message</p>
+                }
+                </div>
+
+
+
+              </div>
+              @*<a class="close" data-dismiss="alert">×</a>*@
+              @*<h1>@form.errors</h1>*@
+            }
               <!--Standard text input form. id = textInput. Show constraints shows the field must be filled.-->
             <span class="glyphicon glyphicon-user"></span>
             @helper.inputText(
@@ -80,7 +115,7 @@
             @*<input class="form-control" placeholder="Password" name="password" type="password" value="" required="">*@
             <span class="glyphicon glyphicon-eye-open"></span>
             @helper.inputText(
-              form("password"),
+              form("loginpasswd"),
               '_label -> "Password",
               'class -> "form-control",
               'placeholder -> "*****************",
