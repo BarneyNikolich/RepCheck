@@ -88,3 +88,9 @@ body, html {
     border-right: 50px solid transparent;
     border-top: 50px solid #5B9BD5;
 }
+
+.nopadding {
+    margin-bottom:0;
+    position: relative;
+    /*float: left;*/
+}

@@ -26,17 +26,40 @@ class HomeController @Inject() extends Controller {
 //  }
 
   def index = Action {
+  //Which form to serve????
     Ok(views.html.index(Userdata.userForm))
   }
 
-  def login = Action {
+  /**
+    * Have signle form submission action... check if the form data contains login or signup then handle accordingly
+    * MAYBE sign up could link to action which serves the page with a sign up form??? not login form??
+    */
 
-    Ok(views.html.loginform(Userdata.userForm))
+  def submitform = Action { implicit request =>
+
+    Userdata.userForm.bindFromRequest.fold(
+      formWithErrors => {
+        println(formWithErrors)
+        BadRequest(views.html.index(formWithErrors))
+      },
+      successform => {
+        val formResults = List (
+          successform.username,
+          successform.email,
+          successform.password,
+          successform.confirmpassword
+        )
+
+        println(successform)
+
+        Ok(formResults.toString())
+      }
+    )
+
   }
 
-  def submit = Action {
-    Ok
-  }
+
+
 
   def test = Action {
     Ok(views.html.test())

@@ -4,10 +4,14 @@
 
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
-POST    /                           controllers.HomeController.submit
+POST    /                           controllers.HomeController.submitform
+
+
+
 GET     /test                       controllers.HomeController.test
 
-GET     /login                      controllers.HomeController.login
+GET     /db                         controllers.ScalaControllerInject.index
+
 
 # An example controller showing how to use dependency injection
 GET     /count                      controllers.CountController.count
