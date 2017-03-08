@@ -6,6 +6,8 @@ import models._
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.Action
+import anorm._
+import play.api.db.DB
 
 
 /**
@@ -30,10 +32,6 @@ class HomeController @Inject() extends Controller {
     Ok(views.html.index(Userdata.userForm))
   }
 
-  /**
-    * Have signle form submission action... check if the form data contains login or signup then handle accordingly
-    * MAYBE sign up could link to action which serves the page with a sign up form??? not login form??
-    */
 
   def submitform = Action { implicit request =>
 
@@ -53,7 +51,10 @@ class HomeController @Inject() extends Controller {
           case Userdata(Some(username), _, Some(passwd), _, _) =>
             val result = List(username, passwd)
             Redirect(routes.HomeController.processsLoginForm(result)) //Redirect the submit action to the formResults method. This is a post.
-          case _ => Ok("Sign in FORM")
+          case Userdata(Some(username), Some(email), _, Some(passwd1), _)  =>
+            val result = List(username, email, passwd1)
+            Redirect(routes.HomeController.processSignupForm(result))
+
         }
       }
     )
@@ -68,9 +69,35 @@ class HomeController @Inject() extends Controller {
     Ok
   }
 
-  def processSignupForm = Action {
-    Ok
 
+
+
+  def processSignupForm(data: List[String]) = Action {
+
+    DB.withConnection { implicit c =>
+      val result: Boolean = SQL("Select * from repcheck.page_retrieval").execute()
+
+      val sqlQuery = SQL(
+        """
+    select * from repcheck.page_retrieval;
+  """
+
+      )
+          println(sqlQuery.params)
+    }
+
+    Ok
+  }
+
+
+
+  def testdb = Action { implicit request =>
+
+//    DB.withConnection { implicit c =>
+//      val result: Boolean = SQL("CREATE TABLE Persons(PersonID int,LastName varchar(255));").execute()
+//    }
+
+    Ok
   }
 
 }

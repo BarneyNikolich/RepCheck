@@ -7,6 +7,9 @@ GET     /                           controllers.HomeController.index
 POST    /                           controllers.HomeController.submitform
 
 GET     /login                      controllers.HomeController.processsLoginForm(logindata: List[String])
+GET     /signup                     controllers.HomeController.processSignupForm(signupdata: List[String])
+
+GET     /test                       controllers.HomeController.testdb
 
 
 
