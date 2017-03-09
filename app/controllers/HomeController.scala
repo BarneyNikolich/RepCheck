@@ -1,6 +1,7 @@
 package controllers
 
 import javax.inject._
+
 import play.api.mvc._
 import models._
 import play.api.Play.current
@@ -8,6 +9,8 @@ import play.api.i18n.Messages.Implicits._
 import play.api.mvc.Action
 import anorm._
 import play.api.db.DB
+import models.Userdata._
+import play.api.i18n.Messages
 
 
 /**
@@ -29,7 +32,7 @@ class HomeController @Inject() extends Controller {
 
   def index = Action {
   //Which form to serve????
-    Ok(views.html.index(Userdata.userForm))
+    Ok(views.html.index(Userdata.userForm, None))
   }
 
 
@@ -41,19 +44,23 @@ class HomeController @Inject() extends Controller {
         //Maybe handle the errors here and return list of messages!
         println(formWithErrors)
 
-        BadRequest(views.html.index(formWithErrors))
+        BadRequest(views.html.index(formWithErrors, None))
       },
       successform => {
 
         //Redirect to specific action - Login or sign up form
 //        LOOK HOW PERTAX FRONTEND HANDLES DATA FROM A FORM
         successform match {
-          case Userdata(Some(username), _, Some(passwd), _, _) =>
-            val result = List(username, passwd)
-            Redirect(routes.HomeController.processsLoginForm(result)) //Redirect the submit action to the formResults method. This is a post.
-          case Userdata(Some(username), Some(email), _, Some(passwd1), _)  =>
-            val result = List(username, email, passwd1)
-            Redirect(routes.HomeController.processSignupForm(result))
+          case Userdata(_, username, _, Some(passwd), _, _) =>
+
+            if(userExists(username, passwd)) {
+              Redirect(routes.HomeController.processsLoginForm(username))
+            } else BadRequest(views.html.index(Userdata.userForm, Some(Messages("error.uname_or_pword_incorrect"))))
+
+
+          case Userdata(_, username, Some(email), _, Some(passwd1), _)  =>
+
+            Redirect(routes.HomeController.processSignupForm(username, email, passwd1))
 
         }
       }
@@ -61,32 +68,42 @@ class HomeController @Inject() extends Controller {
 
   }
 
-  def processsLoginForm(logindata: List[String]) = Action {
-    for(d <- logindata){
-      println(d)
-    }
+  /**
+    * check table if user exists
+    * @param username
+    * @return
+    */
+  def processsLoginForm(username: String) = Action {
 
-    Ok
+    Userdata.findByUsername(username) map { user =>
+
+      val loggedIn = List(user.id, user.username, user.loginpasswd, user.email)
+      Ok("Processing login for: " + loggedIn)
+
+
+    } getOrElse( Ok("Not Found"))
+
+
   }
 
 
-
-
-  def processSignupForm(data: List[String]) = Action {
+  /**
+    * If username doesnt already exist, add user to the database
+    * @param username
+    * @param email
+    * @param passwd
+    * @return
+    */
+  def processSignupForm(username: String, email: String, passwd: String) = Action {
 
     DB.withConnection { implicit c =>
-      val result: Boolean = SQL("Select * from repcheck.page_retrieval").execute()
 
-      val sqlQuery = SQL(
-        """
-    select * from repcheck.page_retrieval;
-  """
-
-      )
-          println(sqlQuery.params)
+      val result = SQL"insert into User(username, email, password) values ($username, $email, $passwd)".execute()
+//        val query = SQL("Select * from repcheck.page_retrieval")
+      Ok(result.toString)
     }
 
-    Ok
+
   }
 
 
