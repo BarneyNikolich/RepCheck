@@ -36,6 +36,10 @@ class HomeController @Inject() extends Controller {
   }
 
 
+  /**
+    * Maybe factor out logic into LoginController???
+    * @return
+    */
   def submitform = Action { implicit request =>
 
     Userdata.userForm.bindFromRequest.fold(

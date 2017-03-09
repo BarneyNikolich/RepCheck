@@ -23,29 +23,8 @@ case class Userdata(id: Option[Long],
                     loginpasswd: Option[String],
                     password: Option[String],
                     confirmpassword: Option[String])
-{
-
-
-
-//  implicit def implicitUserdataBinder(implicit stringBinder: PathBindable[String]) = new PathBindable[Userdata] {
-//
-//    def bind(key: String, value: String): Either[String, Userdata] =
-//      Userdata(username).map(Right(_)).getOrElse(Left("Invalid address type in path"))
-//
-//    def unbind(key: String, addrType: AddrType): String = addrType.toString
-//  }
-//}
-
-
-}
 
 object Userdata {
-
-
-//  def apply(username: String, email: String, loginpassword: String, password: String, confirmpassword:String) = {
-//    new Userdata(username, email, loginpassword, password, confirmpassword)
-//
-//  }
 
   /**
     * Parse a user from a result set
@@ -80,7 +59,6 @@ object Userdata {
     }
 
   }
-
 
   implicit val formats = Json.format[Userdata]
 
