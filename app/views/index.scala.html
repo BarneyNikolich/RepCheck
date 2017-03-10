@@ -1,4 +1,4 @@
-@(form: Form[Userdata], faillogin: Option[String])(implicit messages: Messages)
+@(form: Form[Userdata], faillogin: Option[String], showSignupForm: Boolean, showLoginForm: Boolean)(implicit messages: Messages)
 
 
 @main("RepCheck home") {
@@ -20,34 +20,26 @@
     background-color: #f9f9f9;
   }
   </style>
+  @if(showLoginForm) {
+
+    <script type="text/javascript">
+            window.onload = function () {
+              $('#myModal').modal();
+            }
+    </script>
+  }
+  @if(showSignupForm) {
+
+    <script type="text/javascript">
+            window.onload = function () {
+              $('#signupmodel').modal();
+            }
+    </script>
+  }
 
   <div id="myCarousell" class="jumbotron jumbotron-padding">
-
-
     <!-- WRITE UTILITY FUNCTION TO RETURN THE CORRECT MESSAGE!! -->
 
-    @if(form.hasErrors) {
-      <div class="alert alert-danger nopadding">
-
-        @for(error <- form.errors) {
-          @if(error.key.equals("email")){
-            <p>There is a problem with <strong>email</strong> validation.</p>
-          } else {
-            <p>@error.message</p>
-          }
-        }
-      </div>
-
-
-      @*<a class="close" data-dismiss="alert">×</a>*@
-      @*<h1>@form.errors</h1>*@
-    }
-
-    @if(faillogin.isDefined){
-      <div class="alert alert-danger nopadding">
-        <p>PASSWORD OR USERNAME INCORRECT</p>
-      </div>
-    }
 
     <div class="topcorner">
       <p class="headertxt">
@@ -95,9 +87,13 @@
                 </div>
 
 
-
               @*<a class="close" data-dismiss="alert">×</a>*@
               @*<h1>@form.errors</h1>*@
+            }
+            @if(faillogin.isDefined){
+              <div class="alert alert-danger" role="alert">
+                <p>@faillogin.get</p>
+              </div>
             }
               <!--Standard text input form. id = textInput. Show constraints shows the field must be filled.-->
             <span class="glyphicon glyphicon-user"></span>

@@ -1,3 +1,5 @@
 # Messages
 
-error.uname_or_pword_incorrect="Your username or password is incorrect"
+error.uname_or_pword_incorrect=Your username or password is incorrect
+error.password_too_small=Password must be between 5 and 15 characters
+error.you_missed_something=Oops, you missed something

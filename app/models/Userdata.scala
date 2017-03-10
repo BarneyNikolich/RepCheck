@@ -1,8 +1,5 @@
 package models
 
-
-import java.util.Date
-
 import anorm.SqlParser.get
 import anorm.{SQL, ~}
 import play.api.Application
@@ -10,8 +7,6 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.db.DB
 import play.api.libs.json.Json
-import play.api.i18n.Messages
-import play.api.mvc.PathBindable
 
 
 /**
@@ -47,6 +42,13 @@ object Userdata {
     }
   }
 
+  /**
+    * Check if there is a user in the database
+    * @param username
+    * @param passwd
+    * @param app
+    * @return
+    */
   def userExists(username: String, passwd: String)(implicit app: Application): Boolean = {
 
     DB.withConnection { implicit connection =>

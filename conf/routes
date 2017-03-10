@@ -6,10 +6,10 @@
 GET     /                           controllers.HomeController.index
 POST    /                           controllers.HomeController.submitform
 
-GET     /login                      controllers.HomeController.processsLoginForm(uname: String)
+GET     /login                      controllers.HomeController.processsLoginRequest(uname: String)
 GET     /signup                     controllers.HomeController.processSignupForm(uname: String, email: String, password: String)
 
-GET     /test                       controllers.HomeController.testdb
+GET     /test                       controllers.HomeController.test
 
 
 
