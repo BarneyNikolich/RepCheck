@@ -4,12 +4,14 @@
 
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
-POST    /                           controllers.HomeController.submitform
+POST    /                           controllers.LoginController.submitform
 
-GET     /login                      controllers.HomeController.processsLoginRequest(uname: String)
-GET     /signup                     controllers.HomeController.processSignupForm(uname: String, email: String, password: String)
+GET     /login                      controllers.LoginController.processsLoginRequest(uname: String)
+GET     /signup                     controllers.LoginController.processSignupForm(uname: String, email: String, password: String)
 
 GET     /test                       controllers.HomeController.test
+
+GET     /setup                      controllers.HomeController.setup
 
 
 

@@ -9,6 +9,14 @@ create table User (
   constraint pk_page_retrieval primary key (testID))
 ;
 
+CREATE TABLE `repcheck`.`cheese` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(45) NOT NULL,
+  `email` VARCHAR(45) NULL,
+  `password` VARCHAR(45) NOT NULL,
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC),
+  PRIMARY KEY (`username`),
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC));
 
 
 

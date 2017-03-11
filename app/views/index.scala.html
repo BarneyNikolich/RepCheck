@@ -76,7 +76,7 @@
           <div class="modal-body" style="padding:40px 50px;">
 
 
-          @helper.form(action = routes.HomeController.submitform(), args = 'id -> "loginform") {
+          @helper.form(action = routes.LoginController.submitform(), args = 'id -> "loginform") {
               <!-- WRITE UTILITY FUNCTION TO RETURN THE CORRECT MESSAGE!! -->
             @if(form.hasErrors) {
 
@@ -162,7 +162,7 @@
         <div class="modal-body" style="padding:40px 50px;">
 
 
-        @helper.form(action = routes.HomeController.submitform(), args = 'id -> "signupform") {
+        @helper.form(action = routes.LoginController.submitform(), args = 'id -> "signupform") {
 
 
             <!--Standard text input form. id = textInput. Show constraints shows the field must be filled.-->
