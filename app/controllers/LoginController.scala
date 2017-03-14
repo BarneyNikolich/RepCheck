@@ -21,6 +21,8 @@ import play.mvc.Security.AuthenticatedAction
   */
 class LoginController extends AuthAction {
 
+
+
   /**
     * Maybe factor out logic into LoginController???* @return
     */
@@ -29,9 +31,9 @@ class LoginController extends AuthAction {
     Userdata.userForm.bindFromRequest.fold(
       formWithErrors => {
         if(formWithErrors.data.contains("email")) {
-          BadRequest(views.html.index(formWithErrors, None, showSignupForm = true, showLoginForm = false))
+          BadRequest(views.html.index(formWithErrors, None, showSignupForm = true, showLoginForm = false, loggedIn = false))
         } else {
-          BadRequest(views.html.index(formWithErrors, None, showSignupForm = false, showLoginForm = true))
+          BadRequest(views.html.index(formWithErrors, None, showSignupForm = false, showLoginForm = true, loggedIn =false))
         }
       },
       successform => { successform match {
@@ -40,12 +42,12 @@ class LoginController extends AuthAction {
           if(userExists(username, passwd)) {
             Redirect(routes.LoginController.processsLoginRequest(username)).withSession("loggedin" -> username)
           } else
-            BadRequest(views.html.index(Userdata.userForm, Some(Messages("error.uname_or_pword_incorrect")), showSignupForm = false, showLoginForm = true))
+            BadRequest(views.html.index(Userdata.userForm, Some(Messages("error.uname_or_pword_incorrect")), showSignupForm = false, showLoginForm = true, loggedIn = false))
 
         case Userdata(_, username, Some(email), _, Some(passwd1), _) =>
           Redirect(routes.LoginController.processSignupForm(username, email, passwd1))
         case _ =>
-          BadRequest(views.html.index(Userdata.userForm, Some(Messages("error.you_missed_something")), showSignupForm = false, showLoginForm = true))
+          BadRequest(views.html.index(Userdata.userForm, Some(Messages("error.you_missed_something")), showSignupForm = false, showLoginForm = true, loggedIn = false))
       }
       }
     )
@@ -62,15 +64,16 @@ class LoginController extends AuthAction {
     Userdata.findByUsername(username) map { user =>
 
       val loggedIn = List(user.id, user.username, user.loginpasswd, user.email)
-      Ok("Processing login for: " + loggedIn)
+//      Ok("Processing login for: " + loggedIn)
 
+      Redirect(routes.HomeController.index())
 
     } getOrElse( Ok("Not Found"))
   }
 
 
   /**
-    * If username doesnt already exist, add user to the database
+    * If username doesnt already exist, add user to the database - need to handle this in the form processing.
     * @param username
     * @param email
     * @param passwd
@@ -90,6 +93,10 @@ class LoginController extends AuthAction {
 
   }
 
+
+  def logout = Action {
+    Redirect(routes.HomeController.index()).withNewSession
+  }
 
 
 

@@ -19,15 +19,18 @@ import play.mvc.Security.AuthenticatedAction
 class HomeController @Inject() extends AuthAction {
 
 
-  def index = Action {
-    Ok(views.html.index(Userdata.userForm, None, false, false))
+  def index = Action { implicit request =>
+    if(userIsLoggedIn(request)) Ok(views.html.index(Userdata.userForm, None, false, false, loggedIn = true))
+    else  Ok(views.html.index(Userdata.userForm, None, false, false, loggedIn = false))
   }
 
-  def setup = Action {
 
-
-    Ok(views.html.index(Userdata.userForm, None, false, false))
-  }
+//
+//  def setup = Action {
+//
+//
+//    Ok(views.html.index(Userdata.userForm, None, false, false))
+//  }
 
 
 

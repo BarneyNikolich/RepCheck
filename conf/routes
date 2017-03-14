@@ -8,10 +8,10 @@ POST    /                           controllers.LoginController.submitform
 
 GET     /login                      controllers.LoginController.processsLoginRequest(uname: String)
 GET     /signup                     controllers.LoginController.processSignupForm(uname: String, email: String, password: String)
+GET     /logout                     controllers.LoginController.logout
 
 GET     /test                       controllers.HomeController.test
 
-GET     /setup                      controllers.HomeController.setup
 
 
 

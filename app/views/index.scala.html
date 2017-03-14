@@ -1,4 +1,4 @@
-@(form: Form[Userdata], faillogin: Option[String], showSignupForm: Boolean, showLoginForm: Boolean)(implicit messages: Messages)
+@(form: Form[Userdata], faillogin: Option[String], showSignupForm: Boolean, showLoginForm: Boolean, loggedIn: Boolean)(implicit request: Request[AnyContent], messages: Messages)
 
 
 @main("RepCheck home") {
@@ -41,16 +41,26 @@
     <!-- WRITE UTILITY FUNCTION TO RETURN THE CORRECT MESSAGE!! -->
 
 
-    <div class="topcorner">
-      <p class="headertxt">
-      <a class="atag" href="" data-toggle="modal" data-target="#myModal" >
-      Log in
-      </a>
-    </p>
-    </div>
+      <div class="topcorner">
+        <p class="headertxt">
+        @if(!loggedIn) {
+          <a class="atag" href="" data-toggle="modal" data-target="#myModal" >
+            Log in
+          </a>
+        }else{
+          @*Logged in as: @request.session.get("loggedin").fold("")(n => n)*@
+          <a class="atag" href="@routes.LoginController.logout()" >
+            <span class="glyphicon glyphicon-log-out"></span> Logout
+          </a>
+        }
+
+        </p>
+      </div>
+
+
+
+
     <img class="jumbotron-image" src="/assets/images/index/repchecklogo.png" alt="First slide">
-
-
   </div>
 
   <a href="#container">

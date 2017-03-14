@@ -24,6 +24,18 @@ trait AuthAction extends Controller {
     }
   }
 
+  /**
+    * For use in method
+    * @param request
+    * @return
+    */
+  def userIsLoggedIn(request: Request[AnyContent]) :Boolean =  {
+    request.session.get("loggedin") match {
+      case Some(user) => true
+      case None => false
+    }
+  }
+
   /*
     * The below code does what the AuthAction does but you insert this into each method.
     * Rather than AuthAction which is passed as Parameter
