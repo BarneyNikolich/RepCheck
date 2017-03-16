@@ -22,7 +22,6 @@ import play.mvc.Security.AuthenticatedAction
 class LoginController extends AuthAction {
 
 
-
   /**
     * Maybe factor out logic into LoginController???* @return
     */
@@ -30,21 +29,21 @@ class LoginController extends AuthAction {
 
     Userdata.userForm.bindFromRequest.fold(
       formWithErrors => {
-        if(formWithErrors.data.contains("email")) {
+        if(formWithErrors.data.contains("email")) { //Sign up Form
           BadRequest(views.html.index(formWithErrors, None, showSignupForm = true, showLoginForm = false, loggedIn = false))
-        } else {
+        } else { //Log in Form
           BadRequest(views.html.index(formWithErrors, None, showSignupForm = false, showLoginForm = true, loggedIn =false))
         }
       },
       successform => { successform match {
-        case Userdata(_, username, _, Some(passwd), _, _) =>
+        case Userdata(_, username, _, Some(passwd), _, _) => //Log in form submission
 
           if(userExists(username, passwd)) {
             Redirect(routes.LoginController.processsLoginRequest(username)).withSession("loggedin" -> username)
           } else
             BadRequest(views.html.index(Userdata.userForm, Some(Messages("error.uname_or_pword_incorrect")), showSignupForm = false, showLoginForm = true, loggedIn = false))
 
-        case Userdata(_, username, Some(email), _, Some(passwd1), _) =>
+        case Userdata(_, username, Some(email), _, Some(passwd1), _) => //Sign up form submission
           Redirect(routes.LoginController.processSignupForm(username, email, passwd1))
         case _ =>
           BadRequest(views.html.index(Userdata.userForm, Some(Messages("error.you_missed_something")), showSignupForm = false, showLoginForm = true, loggedIn = false))

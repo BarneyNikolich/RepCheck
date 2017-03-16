@@ -62,6 +62,19 @@ object Userdata {
 
   }
 
+  def userExists(username: String)(implicit app: Application): Boolean = {
+
+    DB.withConnection { implicit connection =>
+      val userdata = SQL("select * from repcheck.User where username = {username}").on('username -> username).as(Userdata.simple.singleOpt)
+
+      userdata match {
+        case Some(Userdata(_, _, _, _, _, _)) => true
+        case _ => false
+      }
+    }
+
+  }
+
   implicit val formats = Json.format[Userdata]
 
   val userForm = Form(

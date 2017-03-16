@@ -47,8 +47,17 @@
           <a class="atag" href="" data-toggle="modal" data-target="#myModal" >
             Log in
           </a>
-        }else{
+        } else {
           @*Logged in as: @request.session.get("loggedin").fold("")(n => n)*@
+
+
+
+
+
+          <a class="atag" href="@routes.AccountController.showAccount(request.session.get("loggedin").fold("")(n => n))" >
+            <span class="glyphicon glyphicon-user nav-space"></span> Account
+          </a>
+          <span>  | </span>
           <a class="atag" href="@routes.LoginController.logout()" >
             <span class="glyphicon glyphicon-log-out"></span> Logout
           </a>
@@ -129,7 +138,7 @@
             )
 
             <div class="checkbox">
-              <label><input type="checkbox" value="" checked>Remember me</label>
+              @*<label><input type="checkbox" value="" checked>Remember me</label>*@
             </div>
             <button type="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-off"></span>
               Login</button>
@@ -141,7 +150,7 @@
           <div class="modal-footer">
             <button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal" ><span class="glyphicon glyphicon-remove"></span> Cancel</button>
             <p>Not a member? <a data-dismiss="modal"  data-toggle="modal" data-target="#signupmodel">Sign Up</a></p>
-            <p>Forgot <a href="#">Password?</a></p>
+            @*<p>Forgot <a href="#">Password?</a></p>*@
           </div>
         </div>
 
