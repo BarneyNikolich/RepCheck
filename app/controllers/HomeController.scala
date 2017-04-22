@@ -29,18 +29,6 @@ class HomeController @Inject() extends AuthAction {
   }
 
 
-
-//
-//  def setup = Action {
-//
-//
-//    Ok(views.html.index(Userdata.userForm, None, false, false))
-//  }
-
-
-
-
-
   def test = AuthAction { implicit request =>
 
     Ok("Must be logged in to see this page")

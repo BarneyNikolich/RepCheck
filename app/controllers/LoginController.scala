@@ -45,10 +45,14 @@ class LoginController extends AuthAction {
             BadRequest(views.html.index(Userdata.userForm, Some(Messages("error.uname_or_pword_incorrect")), showSignupForm = false, showLoginForm = true, loggedIn = false))
 
         case Userdata(_, username, Some(email), _, Some(passwd1), _) => //Sign up form submission
-          val passwordHash = BCrypt.hashpw(passwd1, BCrypt.gensalt())
-          println(BCrypt.checkpw(passwd1, passwordHash))
-          Redirect(routes.RegistrationController.processSignupForm(username, email, passwordHash))
-//          Redirect(routes.LoginController.processSignupForm(username, email, passwd1))
+
+          if(userExists(username)){
+            BadRequest(views.html.index(Userdata.userForm, Some(Messages("Username already exists")), showSignupForm = true, showLoginForm = false, loggedIn = false))
+          } else {
+            val passwordHash = BCrypt.hashpw(passwd1, BCrypt.gensalt())
+            println(BCrypt.checkpw(passwd1, passwordHash))
+            Redirect(routes.RegistrationController.showRegistrationForm(username, email, passwordHash))
+          }
         case _ =>
           BadRequest(views.html.index(Userdata.userForm, Some(Messages("error.you_missed_something")), showSignupForm = false, showLoginForm = true, loggedIn = false))
       }
@@ -102,9 +106,7 @@ class LoginController extends AuthAction {
   }
 
 
-  def registration = Action {
-    Ok(views.html.registrationSteps())
-  }
+
 
 
 }

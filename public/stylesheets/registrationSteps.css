@@ -40,3 +40,18 @@ body {
     line-height: 1.428571429;
     border-radius: 15px;
 }
+
+.navbar-header {
+    float: left;
+    padding: 15px;
+    text-align: center;
+    width: 100%;
+}
+.navbar-brand {float:none;}
+
+
+
+.displayed {
+    display: block;
+    margin-left: auto;
+    margin-right: auto }

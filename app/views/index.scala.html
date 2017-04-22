@@ -50,10 +50,6 @@
         } else {
           @*Logged in as: @request.session.get("loggedin").fold("")(n => n)*@
 
-
-
-
-
           <a class="atag" href="@routes.AccountController.showAccount(request.session.get("loggedin").fold("")(n => n))" >
             <span class="glyphicon glyphicon-user nav-space"></span> Account
           </a>
@@ -80,7 +76,6 @@
   <div class="container">
     @*<h2>Modal Login Example</h2>*@
       @*<!-- Trigger the modal with a button -->*@
-    @*<button type="button" class="btn btn-default btn-lg" id="myBtn">Login</button>*@
 
       <!-- Start login model -->
 
@@ -107,8 +102,7 @@
                 </div>
 
               }
-              @*<a class="close" data-dismiss="alert">×</a>*@
-              @*<h1>@form.errors</h1>*@
+
             }
             @if(faillogin.isDefined){
               <div class="alert alert-danger" role="alert">
@@ -139,7 +133,6 @@
             )
 
             <div class="checkbox">
-              @*<label><input type="checkbox" value="" checked>Remember me</label>*@
             </div>
             <button type="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-off"></span>
               Login</button>
@@ -159,13 +152,6 @@
     </div>
   </div>
 
-  @*<script>*@
-          @*$(document).ready(function(){*@
-            @*$("#myBtn").click(function(){*@
-              @*$("#myModal").modal();*@
-            @*});*@
-          @*});*@
-  @*</script>*@
 
     <!-- END MODEL -->
 
@@ -183,6 +169,12 @@
 
 
         @helper.form(action = routes.LoginController.submitform(), args = 'id -> "signupform") {
+
+          @if(faillogin.isDefined){
+            <div class="alert alert-danger" role="alert">
+              <p>@faillogin.get</p>
+            </div>
+          }
 
           @if(form.hasErrors) {
 
