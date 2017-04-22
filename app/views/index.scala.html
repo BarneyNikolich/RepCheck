@@ -99,13 +99,14 @@
               <!-- WRITE UTILITY FUNCTION TO RETURN THE CORRECT MESSAGE!! -->
             @if(form.hasErrors) {
 
+              @if(showLoginForm) {
                 <div class="alert alert-danger" role="alert">
-                @for(error <- form.errors){
+                @for(error <- form.errors) {
                   <p>@error.message</p>
                 }
                 </div>
 
-
+              }
               @*<a class="close" data-dismiss="alert">×</a>*@
               @*<h1>@form.errors</h1>*@
             }
@@ -183,6 +184,15 @@
 
         @helper.form(action = routes.LoginController.submitform(), args = 'id -> "signupform") {
 
+          @if(form.hasErrors) {
+
+            <div class="alert alert-danger" role="alert">
+            @for(error <- form.errors){
+              <p>@error.message</p>
+            }
+            </div>
+
+          }
 
             <!--Standard text input form. id = textInput. Show constraints shows the field must be filled.-->
           <span class="glyphicon glyphicon-user"></span>

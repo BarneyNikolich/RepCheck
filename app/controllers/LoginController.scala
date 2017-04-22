@@ -13,6 +13,7 @@ import models.Userdata._
 import play.api.i18n.Messages
 import anorm._
 import controllers.auth.AuthAction
+import org.mindrot.jbcrypt.BCrypt
 import play.mvc.Security.AuthenticatedAction
 
 
@@ -44,7 +45,10 @@ class LoginController extends AuthAction {
             BadRequest(views.html.index(Userdata.userForm, Some(Messages("error.uname_or_pword_incorrect")), showSignupForm = false, showLoginForm = true, loggedIn = false))
 
         case Userdata(_, username, Some(email), _, Some(passwd1), _) => //Sign up form submission
-          Redirect(routes.LoginController.processSignupForm(username, email, passwd1))
+          val passwordHash = BCrypt.hashpw(passwd1, BCrypt.gensalt())
+          println(BCrypt.checkpw(passwd1, passwordHash))
+          Redirect(routes.RegistrationController.processSignupForm(username, email, passwordHash))
+//          Redirect(routes.LoginController.processSignupForm(username, email, passwd1))
         case _ =>
           BadRequest(views.html.index(Userdata.userForm, Some(Messages("error.you_missed_something")), showSignupForm = false, showLoginForm = true, loggedIn = false))
       }
@@ -98,6 +102,9 @@ class LoginController extends AuthAction {
   }
 
 
+  def registration = Action {
+    Ok(views.html.registrationSteps())
+  }
 
 
 }
