@@ -1,6 +1,6 @@
 @import models.forms.RegistrationForm
 
-@(form: Form[RegistrationForm])(implicit request: Request[AnyContent], messages: Messages)
+@(form: Form[RegistrationForm], ebayScoreList: List[String], amazonList: List[String])(implicit request: Request[AnyContent], messages: Messages)
 
 
 <!DOCTYPE html>
@@ -13,6 +13,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="@routes.Assets.versioned("javascripts/registration.js")" type="text/javascript"></script>
     <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/profile.css")">
+    <script src="@routes.Assets.versioned("bootstrap/js/bootstrap.js")" type="text/javascript"></script>
+
 
 
     </head>
@@ -138,7 +140,7 @@
                         <img src="/assets/images/default.png" class="displayed" id="profilepic" alt="your image" width="300" height="300" />
 
                         <br><br>
-                        <input type="file" name="picture"
+                        <input type="file" name="picture" class="form-control-file" id="exampleInputFile"
                         onchange="document.getElementById('profilepic').src = window.URL.createObjectURL(this.files[0])">
 
                     </div>
@@ -156,13 +158,59 @@
                 <div class="col-md-12">
                     <h1> Previous Reputation </h1>
 
+                        <h4>Have you retailed on Ebay before? </h4>
+
+                        <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#ebay">Yes</button>
+                        <button type="button" class="btn btn-danger" data-toggle="collapse" data-target="">No</button>
+
+                        <div id="ebay" class="collapse">
+                                <br><br>
+                                @helper.select(
+                                    form("ebayscore"),
+                                    helper.options(ebayScoreList),
+                                    '_label -> "Ebay feedback score (%)",
+                                    'class -> "selectpicker show-menu-arrow",
+                                    '_showConstraints -> false
+
+                                )
+
+                        </div>
+
+
+                    <br>
+
+                    <h4 href="amazon">Have you retailed on Amazon before? </h4>
+                    <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#amazon">Yes</button>
+                    <button type="button" class="btn btn-danger" data-toggle="collapse" data-target="">No</button>
+
+                    <div id="amazon" class="collapse">
+                    <br>
+                        <!--Input text but must be a number-->
+                    @helper.inputText(
+                        form("totalamazonsales"),
+                        '_label -> "How many transactions have you completed?",
+                        '_showConstraints -> false
+
+                    )
+
+
+                    @helper.select(
+                        form("amazonscore"),
+                        helper.options(amazonList),
+                        '_label -> "Amazon star rating",
+                        'class -> "selectpicker show-menu-arrow",
+                        '_showConstraints -> false
+
+                    )
+
+                    </div>
 
 
 
 
 
 
-
+                    <br><br><br>
 
 
                     <button class="btn btn-primary prevBtn btn-lg pull-left" type="button">Previous</button>

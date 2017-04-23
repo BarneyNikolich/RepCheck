@@ -12,6 +12,7 @@ GET     /register                   controllers.RegistrationController.showRegis
 POST    /register                   controllers.RegistrationController.submitRegistrationForm()
 
 
+
 GET     /logout                     controllers.LoginController.logout
 
 GET     /test                       controllers.HomeController.test
