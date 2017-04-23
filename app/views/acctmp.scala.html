@@ -1,4 +1,4 @@
-@(name: String, email: String)
+@(name: String, phone: String, email: String, profilePicture: String)
 
 <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/profile.css")">
 
@@ -89,12 +89,12 @@
             <div class="well well-small clearfix">
                 <div class="row-fluid">
                     <div class="span2">
-                        <img src="https://img.buzzfeed.com/buzzfeed-static/static/enhanced/webdr06/2013/7/8/17/enhanced-buzz-896-1373320283-0.jpg" class="img-polaroid"/>
+                        <img src="@profilePicture" class="img-polaroid"/>
                     </div>
                     <div class="span4">
                         <h2>@name</h2>
                         <ul class="unstyled">
-                            <li><i class="icon-phone"></i> 916-241-3613 </li>
+                            <li><i class="icon-phone"></i> @phone </li>
                             <li><i class="icon-envelope"></i> @email</li>
                             <li><i class="icon-globe"></i> http://jonniespratley.me</li>
                         </ul>

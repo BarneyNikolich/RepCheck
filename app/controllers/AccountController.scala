@@ -1,7 +1,7 @@
 package controllers
 
 import controllers.auth.AuthAction
-import models.Userdata
+import models.{CurrentUser, Userdata}
 import models.Userdata._
 import play.api.Play.current
 
@@ -15,10 +15,12 @@ class AccountController extends AuthAction {
 
     if (userExists(name)) {
 
-      Userdata.findByUsername(name) map { user =>
+      CurrentUser.findByUsername(name) map { user =>
 
-        Ok(views.html.acctmp(user.username, user.email.getOrElse("")))
-      } getOrElse( NotFound )
+        val picLocation = "/assets"+user.profilepiclocation
+        val fullname = user.firtname.capitalize + " " + user.lastname.capitalize
+        Ok(views.html.acctmp(fullname, user.phonenumber, user.email, picLocation))
+      } getOrElse( NotFound("Couldnt find by username!") )
 
 
     } else {

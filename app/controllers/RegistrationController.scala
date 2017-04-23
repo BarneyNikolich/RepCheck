@@ -24,7 +24,12 @@ class RegistrationController extends AuthAction {
   var password: Option[String] = None
 
   def showRegistrationForm(username: String, email: String, passwd: String) = Action { implicit request =>
+    val amazonScoreList = List("5.0", "4.9", "4.8", "4.7", "4.6", "4.3", "4.2", "4.1", "4.0", "3.9", "3.8", "3.7", "3.6", "3.5", "3.4", "3.3", "3.2", "3.1", "3.0")
+    password = Some(passwd)
+    Ok(views.html.registrationSteps(RegistrationForm.form.fill(RegistrationForm(username = username, "", "", email, "", 0, 0, 0)), getList, amazonScoreList))
+  }
 
+  def getList() = {
     import scala.collection.mutable.ListBuffer
     var ebayScoreList = new ListBuffer[String]()
     ebayScoreList += "-- SELECT --"
@@ -32,12 +37,7 @@ class RegistrationController extends AuthAction {
     for(i <- 1 to 100) {
       ebayScoreList += i.toString
     }
-
-
-    val amazonScoreList = List("5.0", "4.9", "4.8", "4.7", "4.6", "4.3", "4.2", "4.1", "4.0", "3.9", "3.8", "3.7", "3.6", "3.5", "3.4", "3.3", "3.2", "3.1", "3.0")
-
-    password = Some(passwd)
-    Ok(views.html.registrationSteps(RegistrationForm.form.fill(RegistrationForm(username = username, "", "", email, "", 0, 0, 0)), ebayScoreList.toList, amazonScoreList))
+    ebayScoreList.toList
   }
 
 
@@ -66,8 +66,8 @@ class RegistrationController extends AuthAction {
   def saveProfilePictureGetLocation(picture: MultipartFormData.FilePart[Files.TemporaryFile], username: String): String = {
       import java.io.File
       val photo = ImageIO.read(picture.ref.file)
-      ImageIO.write(photo, "jpg", new File("profilePictures/"+username+".jpg"))
-      "profilePictures/"+username+".jpg"
+      ImageIO.write(photo, "jpg", new File("public/profilePictures/"+username+".jpg"))
+      "/profilePictures/"+username+".jpg"
   }
 
 
@@ -80,7 +80,7 @@ class RegistrationController extends AuthAction {
         SQL("insert into Userdata(username, firstname, lastname, email, phonenumber, profilepiclocation, password) values ({username}, {firstname}, {lastname}," +
           "{email}, {phonenumber}, {profilepiclocation}, {password})")
           .on('username -> user.username, 'firstname -> user.firtname, 'lastname -> user.lastname, 'email -> user.email,
-            'phonenumber -> user.phonenumber, 'profilepiclocation -> user.phonenumber, 'password -> password.getOrElse("password")).executeInsert()
+            'phonenumber -> user.phonenumber, 'profilepiclocation -> pictureLocation, 'password -> password.getOrElse("password")).executeInsert()
 
       //      val result = SQL"insert into repcheck.User(username, email, password) values ($username, $email, $passwd)".execute()
 

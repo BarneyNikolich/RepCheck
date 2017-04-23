@@ -19,7 +19,6 @@ case class RegistrationForm(
                            ebayscore: Int,
                            totalamazonsales: Int,
                            amazonscore: Double
-
                            )
 
 

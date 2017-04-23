@@ -12,6 +12,77 @@ import play.api.libs.json.Json
 /**
   * Created by Barn on 06/03/2017.
   */
+
+
+case class CurrentUser(
+                      username: String,
+                      firtname: String,
+                      lastname: String,
+                      email: String,
+                      phonenumber: String,
+                      profilepiclocation: String,
+                      password: String
+                      )
+
+object CurrentUser {
+    /**
+    * Parse a user from a result set
+    */
+  val simple = {
+      get[String]("Userdata.username") ~
+      get[String]("Userdata.firstname") ~
+      get[String]("Userdata.lastname") ~
+      get[String]("Userdata.email") ~
+      get[String]("Userdata.phonenumber") ~
+      get[String]("Userdata.profilepiclocation") ~
+      get[String]("Userdata.password") map {
+      case username~firstname~lastname~email~phonenumber~profilepiclocation~password =>
+        CurrentUser(username, firstname, lastname, email, phonenumber, profilepiclocation, password)
+    }
+  }
+
+
+
+  /**
+    * Retrieve a user from the username.
+    */
+  def findByUsername(username: String)(implicit app: Application): Option[CurrentUser] = {
+    DB.withConnection { implicit connection =>
+      SQL("select * from repcheck.Userdata where username = {username}").on('username -> username).as(CurrentUser.simple.singleOpt)
+    }
+  }
+
+
+
+  def userExists(username: String, passwd: String)(implicit app: Application): Boolean = {
+
+    DB.withConnection { implicit connection =>
+      val userdata = SQL("select * from repcheck.Userdata where username = {username} and password = {password}").on('username -> username, 'password -> passwd).as(CurrentUser.simple.singleOpt)
+
+      userdata match {
+        case Some(CurrentUser(_, _, _, _, _, _, _)) => true
+        case _ => false
+      }
+    }
+
+  }
+
+  def userExists(username: String)(implicit app: Application): Boolean = {
+
+    DB.withConnection { implicit connection =>
+      val userdata = SQL("select * from repcheck.Userdata where username = {username}").on('username -> username).as(CurrentUser.simple.singleOpt)
+
+      userdata match {
+        case Some(CurrentUser(_, _, _, _, _, _, _)) => true
+        case _ => false
+      }
+    }
+
+  }
+
+}
+
+
 case class Userdata(id: Option[Long],
                     username: String,
                     email: Option[String],
@@ -36,9 +107,9 @@ object Userdata {
   /**
     * Retrieve a user from the username.
     */
-  def findByUsername(username: String)(implicit app: Application): Option[Userdata] = {
+  def findByUsername(username: String)(implicit app: Application): Option[CurrentUser] = {
     DB.withConnection { implicit connection =>
-      SQL("select * from repcheck.User where username = {username}").on('username -> username).as(Userdata.simple.singleOpt)
+      SQL("select * from repcheck.User where username = {username}").on('username -> username).as(CurrentUser.simple.singleOpt)
     }
   }
 
@@ -52,10 +123,10 @@ object Userdata {
   def userExists(username: String, passwd: String)(implicit app: Application): Boolean = {
 
     DB.withConnection { implicit connection =>
-      val userdata = SQL("select * from repcheck.User where username = {username} and password = {password}").on('username -> username, 'password -> passwd).as(Userdata.simple.singleOpt)
+      val userdata = SQL("select * from repcheck.Userdata where username = {username} and password = {password}").on('username -> username, 'password -> passwd).as(CurrentUser.simple.singleOpt)
 
       userdata match {
-        case Some(Userdata(_, _, _, _, _, _)) => true
+        case Some(CurrentUser(_, _, _, _, _, _, _)) => true
         case _ => false
       }
     }
@@ -65,10 +136,10 @@ object Userdata {
   def userExists(username: String)(implicit app: Application): Boolean = {
 
     DB.withConnection { implicit connection =>
-      val userdata = SQL("select * from repcheck.User where username = {username}").on('username -> username).as(Userdata.simple.singleOpt)
+      val userdata = SQL("select * from repcheck.Userdata where username = {username}").on('username -> username).as(CurrentUser.simple.singleOpt)
 
       userdata match {
-        case Some(Userdata(_, _, _, _, _, _)) => true
+        case Some(CurrentUser(_, _, _, _, _, _, _)) => true
         case _ => false
       }
     }

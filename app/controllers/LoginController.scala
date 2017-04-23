@@ -70,7 +70,7 @@ class LoginController extends AuthAction {
 
     Userdata.findByUsername(username) map { user =>
 
-      val loggedIn = List(user.id, user.username, user.loginpasswd, user.email)
+      val loggedIn = List(user.username, user.password, user.email)
 //      Ok("Processing login for: " + loggedIn)
 
       Redirect(routes.HomeController.index())
