@@ -7,6 +7,8 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.db.DB
 import play.api.libs.json.Json
+import org.mindrot.jbcrypt.BCrypt
+
 
 
 /**
@@ -121,12 +123,13 @@ object Userdata {
     * @return
     */
   def userExists(username: String, passwd: String)(implicit app: Application): Boolean = {
-
     DB.withConnection { implicit connection =>
-      val userdata = SQL("select * from repcheck.Userdata where username = {username} and password = {password}").on('username -> username, 'password -> passwd).as(CurrentUser.simple.singleOpt)
+      val userdata = SQL("select * from repcheck.Userdata where username = {username}").on('username -> username ).as(CurrentUser.simple.singleOpt)
 
-      userdata match {
-        case Some(CurrentUser(_, _, _, _, _, _, _)) => true
+        userdata match {
+        case Some(CurrentUser(_, _, _, _, _, _, haspw)) => {
+          BCrypt.checkpw(passwd, haspw) //returns true if password matches hash
+        }
         case _ => false
       }
     }
