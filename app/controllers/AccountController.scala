@@ -4,6 +4,7 @@ import controllers.auth.AuthAction
 import models.{CurrentUser, Userdata}
 import models.Userdata._
 import play.api.Play.current
+import play.api.mvc.Action
 
 
 /**
@@ -11,7 +12,7 @@ import play.api.Play.current
   */
 class AccountController extends AuthAction {
 
-  def showAccount(name: String) = AuthAction { implicit request =>
+  def showAccount(name: String) = Action { implicit request =>
 
     if (userExists(name)) {
 
