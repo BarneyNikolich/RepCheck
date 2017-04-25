@@ -9,6 +9,7 @@ import models.forms.RegistrationForm
 import play.api.db.DB
 import play.api.mvc.{Action, MultipartFormData, Request}
 import play.api.Play.current
+import play.api.data.Form
 import play.api.i18n.Messages.Implicits._
 import play.api.libs.Files
 
@@ -22,11 +23,15 @@ class RegistrationController extends AuthAction {
 
 
   var password: Option[String] = None
+  var formWithErrorsHack: Option[Form[RegistrationForm]] = None
 
   def showRegistrationForm(username: String, email: String, passwd: String) = Action { implicit request =>
     val amazonScoreList = List("5.0", "4.9", "4.8", "4.7", "4.6", "4.3", "4.2", "4.1", "4.0", "3.9", "3.8", "3.7", "3.6", "3.5", "3.4", "3.3", "3.2", "3.1", "3.0")
     password = Some(passwd)
-    Ok(views.html.registrationSteps(RegistrationForm.form.fill(RegistrationForm(username = username, "", "", email, "", 0, 0, 0)), getList, amazonScoreList))
+
+    val form = RegistrationForm.form
+    val formORerorrs = formWithErrorsHack.getOrElse(form.fill(RegistrationForm(username, "", "", email, "", 0, 0, 0)))
+    Ok(views.html.registrationSteps(formORerorrs, getList, amazonScoreList))
   }
 
   def getList() = {
@@ -46,6 +51,7 @@ class RegistrationController extends AuthAction {
     RegistrationForm.form.bindFromRequest().fold(
       hasErrors => {
         println(hasErrors)
+        formWithErrorsHack = Some(hasErrors)
         Redirect(routes.RegistrationController.showRegistrationForm("", "", ""))
       },
       success => {

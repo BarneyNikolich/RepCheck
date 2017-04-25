@@ -1,6 +1,7 @@
-@import models.forms.RegistrationForm
+@(form: Form[models.forms.RegistrationForm], ebayScoreList: List[String], amazonList: List[String])(implicit request: Request[AnyContent], messages: Messages)
 
-@(form: Form[RegistrationForm], ebayScoreList: List[String], amazonList: List[String])(implicit request: Request[AnyContent], messages: Messages)
+@implicitFieldConstructor = @{ b3.inline.fieldConstructor }
+
 
 
 <!DOCTYPE html>
@@ -158,10 +159,17 @@
                 <div class="col-md-12">
                     <h1> Previous Reputation </h1>
 
-                        <h4>Have you retailed on Ebay before? </h4>
+                    <h4>Have you retailed on Ebay before?</h4>
 
-                        <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#ebay">Yes</button>
-                        <button type="button" class="btn btn-danger" data-toggle="collapse" data-target="">No</button>
+                    @b3.radio( form("ebay"), '_inline -> true ) { implicit extraInfo =>
+
+                        <label class="btn btn-success">
+                        @b3.radioOption("yes", "Yes", Symbol("data-target") -> "#ebay", Symbol("data-toggle") -> "collapse")
+                        </label>
+                        <label class="btn btn-danger">
+                        @b3.radioOption("no", "No")
+                        </label>
+                    }
 
                         <div id="ebay" class="collapse">
                                 <br><br>
@@ -173,15 +181,22 @@
                                     '_showConstraints -> false
 
                                 )
-
                         </div>
 
 
                     <br>
 
                     <h4 href="amazon">Have you retailed on Amazon before? </h4>
-                    <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#amazon">Yes</button>
-                    <button type="button" class="btn btn-danger" data-toggle="collapse" data-target="">No</button>
+
+                    @b3.radio( form("amazon"), '_inline -> true ) { implicit extraInfo =>
+
+                        <label class="btn btn-success">
+                            @b3.radioOption("yes", "Yes", Symbol("data-target") -> "#amazon", Symbol("data-toggle") -> "collapse")
+                        </label>
+                        <label class="btn btn-danger">
+                        @b3.radioOption("no", "No")
+                        </label>
+                    }
 
                     <div id="amazon" class="collapse">
                     <br>

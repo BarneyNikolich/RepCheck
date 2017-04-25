@@ -8,6 +8,7 @@ scalaVersion := "2.11.7"
 
 
 libraryDependencies ++= Seq(
+  "com.adrianhurt" %% "play-bootstrap" % "1.1-P25-B3",
   jdbc,
   cache,
   ws,
@@ -17,7 +18,6 @@ libraryDependencies ++= Seq(
   "mysql" % "mysql-connector-java" % "5.1.36",
   "com.typesafe.play" %% "anorm" % "2.5.0",
   "org.mindrot" % "jbcrypt" % "0.3m"
-
 
 )
 
