@@ -161,13 +161,23 @@
 
                     <h4>Have you retailed on Ebay before?</h4>
 
+                    <script>
+                        function collapseEbay() {
+                            $("#ebay").collapse('hide');
+                        }
+
+                        function collapseAmazon() {
+                            $("#amazon").collapse('hide');
+                        }
+                    </script>
+
                     @b3.radio( form("ebay"), '_inline -> true ) { implicit extraInfo =>
 
                         <label class="btn btn-success">
                         @b3.radioOption("yes", "Yes", Symbol("data-target") -> "#ebay", Symbol("data-toggle") -> "collapse")
                         </label>
                         <label class="btn btn-danger">
-                        @b3.radioOption("no", "No")
+                        @b3.radioOption("no", "No", 'onclick -> "collapseEbay()")
                         </label>
                     }
 
@@ -194,7 +204,7 @@
                             @b3.radioOption("yes", "Yes", Symbol("data-target") -> "#amazon", Symbol("data-toggle") -> "collapse")
                         </label>
                         <label class="btn btn-danger">
-                        @b3.radioOption("no", "No")
+                        @b3.radioOption("no", "No", 'onclick -> "collapseAmazon()")
                         </label>
                     }
 
