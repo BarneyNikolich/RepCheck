@@ -6,6 +6,7 @@
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
 POST    /                           controllers.LoginController.submitform
+GET     /p                          controllers.testcontroller.index
 
 GET     /login                      controllers.LoginController.processsLoginRequest(uname: String)
 GET     /signup                     controllers.LoginController.processSignupForm(uname: String, email: String, password: String)
@@ -24,6 +25,19 @@ GET     /accounts/:uname            controllers.AccountController.showAccount(un
 GET     /db                         controllers.ScalaControllerInject.index
 
 
+# Computers list (look at the default values for pagination parameters)
+GET     /computers                  controllers.testcontroller.list(p:Int ?= 0, s:Int ?= 2, f ?= "")
+
+# Add computer
+GET     /computers/new              controllers.testcontroller.create
+POST    /computers                  controllers.testcontroller.save
+
+# Edit existing computer
+GET     /computers/:id              controllers.testcontroller.edit(id:Long)
+POST    /computers/:id              controllers.testcontroller.update(id:Long)
+
+# Delete a computer
+POST    /computers/:id/delete       controllers.testcontroller.delete(id:Long)
 # Map static resources from the /public folder to the /assets URL path
 #GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 

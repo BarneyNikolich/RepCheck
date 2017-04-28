@@ -24,7 +24,8 @@ class LoginController extends AuthAction {
 
 
   /**
-    * Maybe factor out logic into LoginController???* @return
+    * Login or sign up form submission. Depending on which form is submitted the appropriate action is called.
+    * @return
     */
   def submitform = Action { implicit request =>
 

@@ -171,7 +171,7 @@
                         }
                     </script>
 
-                    @b3.radio( form("ebay"), '_inline -> true ) { implicit extraInfo =>
+                    @b3.radio( form("retailebay"), '_inline -> true ) { implicit extraInfo =>
 
                         <label class="btn btn-success">
                         @b3.radioOption("yes", "Yes", Symbol("data-target") -> "#ebay", Symbol("data-toggle") -> "collapse")
@@ -181,24 +181,35 @@
                         </label>
                     }
 
-                        <div id="ebay" class="collapse">
-                                <br><br>
-                                @helper.select(
-                                    form("ebayscore"),
-                                    helper.options(ebayScoreList),
-                                    '_label -> "Ebay feedback score (%)",
-                                    'class -> "selectpicker show-menu-arrow",
-                                    '_showConstraints -> false
 
-                                )
-                        </div>
+
+                    <div id="ebay" class="collapse">
+
+
+                        @helper.inputText(
+                            form("ebayname"),
+                            '_label -> "What is your ebay username?",
+                            'class -> "form-control",
+                            '_showConstraints -> false
+                        )
+
+
+                        @helper.select(
+                            form("ebayscore"),
+                            helper.options(ebayScoreList),
+                            '_label -> "Ebay feedback score (%)",
+                            'value -> "",
+                            'class -> "selectpicker show-menu-arrow",
+                            '_showConstraints -> false
+                        )
+                    </div>
 
 
                     <br>
 
                     <h4 href="amazon">Have you retailed on Amazon before? </h4>
 
-                    @b3.radio( form("amazon"), '_inline -> true ) { implicit extraInfo =>
+                    @b3.radio( form("retailamazon"), '_inline -> true ) { implicit extraInfo =>
 
                         <label class="btn btn-success">
                             @b3.radioOption("yes", "Yes", Symbol("data-target") -> "#amazon", Symbol("data-toggle") -> "collapse")
@@ -218,7 +229,6 @@
 
                     )
 
-
                     @helper.select(
                         form("amazonscore"),
                         helper.options(amazonList),
@@ -230,6 +240,17 @@
 
                     </div>
 
+                    <h4>Would you like to add recent transaction information?</h4>
+
+                    @b3.radio( form("transactions"), '_inline -> true ) { implicit extraInfo =>
+
+                        <label class="btn btn-success">
+                            @b3.radioOption("yes", "Yes", Symbol("data-target") -> "#amazon", Symbol("data-toggle") -> "collapse")
+                        </label>
+                        <label class="btn btn-danger">
+                        @b3.radioOption("no", "No", 'onclick -> "collapseAmazon()")
+                        </label>
+                    }
 
 
 

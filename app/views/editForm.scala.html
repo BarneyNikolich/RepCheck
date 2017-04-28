@@ -1,0 +1,40 @@
+@(id: Long, computerForm: Form[Computer], companies : Seq[(String, String)])(implicit messages: Messages)
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@views.html.style {
+    
+    <h1>Edit computer</h1>
+    
+    @form(routes.testcontroller.update(id)) {
+        
+        <fieldset>
+        
+            @inputText(computerForm("name"), '_label -> "Computer name", '_help -> "")
+            @inputDate(computerForm("introduced"), '_label -> "Introduced date", '_help -> "")
+            @inputDate(computerForm("discontinued"), '_label -> "Discontinued date", '_help -> "")
+            
+            @select(
+                computerForm("company"), 
+                companies, 
+                '_label -> "Company", '_default -> "-- Choose a company --",
+                '_showConstraints -> false
+            )
+        
+        </fieldset>
+        
+        <div class="actions">
+            <input type="submit" value="Save this computer" class="btn primary"> or 
+            <a href="@routes.testcontroller.list()" class="btn">Cancel</a>
+        </div>
+        
+    }
+    
+    @form(routes.testcontroller.delete(id), 'class -> "topRight") {
+        <input type="submit" value="Delete this computer" class="btn danger">
+    }
+    
+
+}

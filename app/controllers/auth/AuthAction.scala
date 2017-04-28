@@ -10,7 +10,7 @@ import play.api.mvc._
 trait AuthAction extends Controller {
 
   /**
-    * If the session exists then go to desired path.
+    * If a logged in user exists in the session then go to desired path.
     * Else Redirect the User to the home page.
     * The request is as it comes in... hasn't changed state to a BadRequest or OK.
     * It essentially has access to the block of the action.

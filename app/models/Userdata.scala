@@ -23,7 +23,8 @@ case class CurrentUser(
                       email: String,
                       phonenumber: String,
                       profilepiclocation: String,
-                      password: String
+                      password: String,
+                      ebayname: String
                       )
 
 object CurrentUser {
@@ -37,16 +38,17 @@ object CurrentUser {
       get[String]("Userdata.email") ~
       get[String]("Userdata.phonenumber") ~
       get[String]("Userdata.profilepiclocation") ~
-      get[String]("Userdata.password") map {
-      case username~firstname~lastname~email~phonenumber~profilepiclocation~password =>
-        CurrentUser(username, firstname, lastname, email, phonenumber, profilepiclocation, password)
+      get[String]("Userdata.password") ~
+      get[String]("Userdata.ebayname")  map {
+      case username~firstname~lastname~email~phonenumber~profilepiclocation~password~ebayname =>
+        CurrentUser(username, firstname, lastname, email, phonenumber, profilepiclocation, password, ebayname)
     }
   }
 
 
 
   /**
-    * Retrieve a user from the username.
+    * Retrieve a user from the database identified by username.
     */
   def findByUsername(username: String)(implicit app: Application): Option[CurrentUser] = {
     DB.withConnection { implicit connection =>
@@ -55,27 +57,39 @@ object CurrentUser {
   }
 
 
-
+  /**
+    * Check if a user exists with a username and a password
+    * @param username
+    * @param passwd
+    * @param app
+    * @return
+    */
   def userExists(username: String, passwd: String)(implicit app: Application): Boolean = {
 
     DB.withConnection { implicit connection =>
       val userdata = SQL("select * from repcheck.Userdata where username = {username} and password = {password}").on('username -> username, 'password -> passwd).as(CurrentUser.simple.singleOpt)
 
       userdata match {
-        case Some(CurrentUser(_, _, _, _, _, _, _)) => true
+        case Some(CurrentUser(_, _, _, _, _, _, _, _)) => true
         case _ => false
       }
     }
 
   }
 
+  /**
+    * Check if a user exists with just a username
+    * @param username
+    * @param app
+    * @return
+    */
   def userExists(username: String)(implicit app: Application): Boolean = {
 
     DB.withConnection { implicit connection =>
       val userdata = SQL("select * from repcheck.Userdata where username = {username}").on('username -> username).as(CurrentUser.simple.singleOpt)
 
       userdata match {
-        case Some(CurrentUser(_, _, _, _, _, _, _)) => true
+        case Some(CurrentUser(_, _, _, _, _, _, _, _)) => true
         case _ => false
       }
     }
@@ -115,25 +129,26 @@ object Userdata {
     }
   }
 
+
   /**
-    * Check if there is a user in the database
+    * This method checks if a user exists in the database that matches a queried username and password
+    * BCrypt cryptographic hashing library is used to encrypt and decrypt plain text passwords
     * @param username
     * @param passwd
     * @param app
-    * @return
+    * @return Boolean
     */
   def userExists(username: String, passwd: String)(implicit app: Application): Boolean = {
     DB.withConnection { implicit connection =>
       val userdata = SQL("select * from repcheck.Userdata where username = {username}").on('username -> username ).as(CurrentUser.simple.singleOpt)
 
         userdata match {
-        case Some(CurrentUser(_, _, _, _, _, _, haspw)) => {
+        case Some(CurrentUser(_, _, _, _, _, _, haspw, _)) => {
           BCrypt.checkpw(passwd, haspw) //returns true if password matches hash
         }
         case _ => false
       }
     }
-
   }
 
   def userExists(username: String)(implicit app: Application): Boolean = {
@@ -142,7 +157,7 @@ object Userdata {
       val userdata = SQL("select * from repcheck.Userdata where username = {username}").on('username -> username).as(CurrentUser.simple.singleOpt)
 
       userdata match {
-        case Some(CurrentUser(_, _, _, _, _, _, _)) => true
+        case Some(CurrentUser(_, _, _, _, _, _, _, _)) => true
         case _ => false
       }
     }

@@ -20,7 +20,7 @@ class AccountController extends AuthAction {
 
         val picLocation = "/assets"+user.profilepiclocation
         val fullname = user.firtname.capitalize + " " + user.lastname.capitalize
-        Ok(views.html.acctmp(fullname, user.phonenumber, user.email, picLocation))
+        Ok(views.html.acctmp(fullname, user.phonenumber, user.email, picLocation, user.ebayname))
       } getOrElse( NotFound("Couldnt find by username!") )
 
 

@@ -7,7 +7,7 @@ import anorm.SQL
 import controllers.auth.AuthAction
 import models.forms.RegistrationForm
 import play.api.db.DB
-import play.api.mvc.{Action, MultipartFormData, Request}
+import play.api.mvc.{Action, MultipartFormData}
 import play.api.Play.current
 import play.api.data.Form
 import play.api.i18n.Messages.Implicits._
@@ -24,25 +24,27 @@ class RegistrationController extends AuthAction {
 
   var password: Option[String] = None
   var formWithErrorsHack: Option[Form[RegistrationForm]] = None
+  var emaill: Option[String] = None
+  var usernamee: Option[String] = None
 
   def showRegistrationForm(username: String, email: String, passwd: String) = Action { implicit request =>
     val amazonScoreList = List("5.0", "4.9", "4.8", "4.7", "4.6", "4.3", "4.2", "4.1", "4.0", "3.9", "3.8", "3.7", "3.6", "3.5", "3.4", "3.3", "3.2", "3.1", "3.0")
     password = Some(passwd)
+    emaill = Some(email)
+    usernamee = Some(username)
 
     val form = RegistrationForm.form
-    val formORerorrs = formWithErrorsHack.getOrElse(form.fill(RegistrationForm(username, "", "", email, "", 0, 0, 0)))
+    val formORerorrs = formWithErrorsHack.getOrElse(form.fill(RegistrationForm(username, "", "", email, "", Some(0), Some(0), Some(0), "", "", Some(""))))
     Ok(views.html.registrationSteps(formORerorrs, getList, amazonScoreList))
   }
 
   def getList() = {
     import scala.collection.mutable.ListBuffer
     var ebayScoreList = new ListBuffer[String]()
-    ebayScoreList += "-- SELECT --"
-
     for(i <- 1 to 100) {
       ebayScoreList += i.toString
     }
-    ebayScoreList.toList
+    ebayScoreList.toList.reverse
   }
 
 
@@ -52,17 +54,31 @@ class RegistrationController extends AuthAction {
       hasErrors => {
         println(hasErrors)
         formWithErrorsHack = Some(hasErrors)
-        Redirect(routes.RegistrationController.showRegistrationForm("", "", ""))
+        Redirect(routes.RegistrationController.showRegistrationForm(usernamee.getOrElse(""), emaill.getOrElse(""),""))
       },
       success => {
+
         request.body.file("picture") map { picture =>
 
           if (picture.filename.length != 0){
 
-            addUserToDatabase(success, saveProfilePictureGetLocation(picture, success.username))
+            //Check if user has indicated they previously use amazon or ebay
+            val user = success match {
+              case RegistrationForm(_, _, _, _, _, _, _, _, "no", "no", _) =>
+                RegistrationForm(success.username, success.firtname, success.lastname, success.email, success.phonenumber, None, None, None, success.retailebay, success.retailamazon, None)
+              case RegistrationForm(_, _, _, _, _, _, _, _, "no", "yes", _) =>
+                RegistrationForm(success.username, success.firtname, success.lastname, success.email, success.phonenumber, None, success.totalamazonsales, success.amazonscore, success.retailebay, success.retailamazon, None)
+              case RegistrationForm(_, _, _, _, _, _, _, _, "yes", "no", _) =>
+                RegistrationForm(success.username, success.firtname, success.lastname, success.email, success.phonenumber, success.ebayscore, None, None, success.retailebay, success.retailamazon, success.ebayname)
+              case _ => success
+            }
+
+
+            println(user)
+            addUserToDatabase(user, saveProfilePictureGetLocation(picture, success.username))
             Redirect(routes.HomeController.index()).withSession("loggedin" -> success.username) //Handle next stage of application
           }
-          else Redirect(routes.RegistrationController.showRegistrationForm(success.username, success.email, ""))
+          else Redirect(routes.RegistrationController.showRegistrationForm(success.username, success.email, "")) //no picture present
         } getOrElse Ok("No picture found!")
       }
     )
@@ -83,10 +99,11 @@ class RegistrationController extends AuthAction {
     DB.withConnection { implicit c =>
 
       val id: Option[Long] =
-        SQL("insert into Userdata(username, firstname, lastname, email, phonenumber, profilepiclocation, password) values ({username}, {firstname}, {lastname}," +
-          "{email}, {phonenumber}, {profilepiclocation}, {password})")
+        SQL("insert into Userdata(username, firstname, lastname, email, phonenumber, profilepiclocation, password, ebayname) values ({username}, {firstname}, {lastname}," +
+          "{email}, {phonenumber}, {profilepiclocation}, {password}, {ebayname})")
           .on('username -> user.username, 'firstname -> user.firtname, 'lastname -> user.lastname, 'email -> user.email,
-            'phonenumber -> user.phonenumber, 'profilepiclocation -> pictureLocation, 'password -> password.getOrElse("password")).executeInsert()
+            'phonenumber -> user.phonenumber, 'profilepiclocation -> pictureLocation, 'password -> password.getOrElse("password"),
+            'ebayname -> user.ebayname.getOrElse("problem with ebay name")).executeInsert()
 
       //      val result = SQL"insert into repcheck.User(username, email, password) values ($username, $email, $passwd)".execute()
 
