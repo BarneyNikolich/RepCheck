@@ -1,7 +1,8 @@
-@(name: String, phone: String, email: String, profilePicture: String, ebayusername: String)
+@(name: String, phone: String, email: String, profilePicture: String, ebayusername: String, currentPage: Page[(Transaction, Option[CurrentUser])], currentOrderBy: Int, currentFilter: String)(implicit flash: play.api.mvc.Flash, messages: Messages)
 
 <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/profile.css")">
 
+<link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.versioned("stylesheets/bootstrap.min.css")">
 
 <html>
 
@@ -13,8 +14,31 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="@routes.Assets.versioned("bootstrap/js/bootstrap.js")" type="text/javascript"></script>
 
+    @*<link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.versioned("stylesheets/table.css")">*@
 
 
+
+
+
+
+    @****************************************
+        * Helper generating navigation links    *
+        ****************************************@
+    @link(newPage: Int, newOrderBy: Option[Int] = None) = @{
+        routes.testcontroller.list(newPage, newOrderBy.map { orderBy =>
+            if(orderBy == scala.math.abs(currentOrderBy)) -currentOrderBy else orderBy
+        }.getOrElse(currentOrderBy), currentFilter)
+
+    }
+
+        @**********************************
+        * Helper generating table headers *
+        ***********************************@
+    @header(orderBy: Int, title: String) = {
+        <th class="col@orderBy header @if(scala.math.abs(currentOrderBy) == orderBy) @{if(currentOrderBy < 0) "headerSortDown" else "headerSortUp"}">
+            <a href="@link(0, Some(orderBy))">@title</a>
+        </th>
+    }
 
 
     <div class="navbar navbar-default navbar-fixed-top  navbar-custom" role="navigation">
@@ -129,7 +153,93 @@
 
                 <div class="container">
 
+                    <h1>Reviews and transactions</h1>
+
+
+                    <div id="actions">
+
+                        <h5>Only add if user is logged in and on his account page</h5>
+                        <a class="btn success" id="add" href="@routes.testcontroller.create()">Add a new computer</a>
+
+                    </div>
+
+                    @Option(currentPage.items).filterNot(_.isEmpty).map { transactions =>
+
+                    <table class="computers zebra-striped">
+                        <thead>
+                            <tr>
+
+                                @header(1, "User name")
+                                @header(2, "Date sold")
+                                @header(3, "Item")
+                                @header(4, "Rating")
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        @transactions.map {
+                            case (transaction, company) => {
+                                <tr>
+                                    <td><a href="@routes.testcontroller.edit(transaction.id.get)">@transaction.usernameId</a></td>
+                                    <td>
+                                    @transaction.date.map(_.format("dd MMM yyyy")).getOrElse { <em>-</em> }
+                                    </td>
+                                    <td>
+                                    @transaction.item
+                                    </td>
+                                    <td>
+                                    @transaction.rating
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+
+                        </tbody>
+                    </table>
+
+                    <div id="pagination" class="pagination">
+                        <ul>
+                            @currentPage.prev.map { page =>
+                            <li class="prev">
+                                <a href="@link(page)">&larr; Previous</a>
+                            </li>
+                            }.getOrElse {
+                                <li class="prev disabled">
+                                    <a>&larr; Previous</a>
+                                </li>
+                            }
+                        <li class="current">
+                            <a>Displaying @(currentPage.offset + 1) to @(currentPage.offset + transactions.size) of @currentPage.total</a>
+                        </li>
+                            @currentPage.next.map { page =>
+                            <li class="next">
+                                <a href="@link(page)">Next &rarr;</a>
+                            </li>
+                            }.getOrElse {
+                                <li class="next disabled">
+                                    <a>Next &rarr;</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+
+                    }.getOrElse {
+
+                        <div class="well">
+                            <em>Nothing to display</em>
+                        </div>
+
+                    }
+
+
                     <div class="row">
+
+
+
+
+
+
                         <div class="col-sm-4">
                             <div class="rating-block">
                                 <h4>Average user rating</h4>
