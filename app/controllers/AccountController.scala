@@ -38,8 +38,8 @@ class AccountController extends AuthAction {
 
 
 
-        Ok(views.html.acctmp(user.username, fullname, user.phonenumber, user.email, picLocation, user.ebayname, models.Transaction.list(page = page, orderBy = orderBy, filter = ("%"+filter+"%")),
-          orderBy, filter))
+        Ok(views.html.accountPage(user.username, fullname, user.phonenumber, user.email, picLocation, user.ebayname, models.Transaction.list(page = page, orderBy = orderBy, filter = ("%"+filter+"%")),
+          orderBy, filter, getFacebookLink(user.facebookemail)))
 
 
       } getOrElse( NotFound("Couldnt find by username!") )
@@ -50,6 +50,16 @@ class AccountController extends AuthAction {
     }
   }
 
+  def getFacebookLink(facebookemail: String) = {
+    if(facebookemail != "None") {
+
+      val first =  "https://www.facebook.com/search/str/"
+      val split = facebookemail.split("@")
+      first + split.mkString("%40") + "/keywords_top"
+    } else {
+      facebookemail
+    }
+  }
 
 
 

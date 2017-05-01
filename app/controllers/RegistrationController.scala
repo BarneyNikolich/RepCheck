@@ -34,7 +34,7 @@ class RegistrationController extends AuthAction {
     usernamee = Some(username)
 
     val form = RegistrationForm.form
-    val formORerorrs = formWithErrorsHack.getOrElse(form.fill(RegistrationForm(username, "", "", email, "", Some(0), Some(0), Some(0), "", "", Some(""))))
+    val formORerorrs = formWithErrorsHack.getOrElse(form.fill(RegistrationForm(username, "", "", email, "", Some(0), Some(0), Some(0), "", "", Some(""), "", None)))
     Ok(views.html.registrationSteps(formORerorrs, getList, amazonScoreList))
   }
 
@@ -64,12 +64,16 @@ class RegistrationController extends AuthAction {
 
             //Check if user has indicated they previously use amazon or ebay
             val user = success match {
-              case RegistrationForm(_, _, _, _, _, _, _, _, "no", "no", _) =>
-                RegistrationForm(success.username, success.firtname, success.lastname, success.email, success.phonenumber, None, None, None, success.retailebay, success.retailamazon, None)
-              case RegistrationForm(_, _, _, _, _, _, _, _, "no", "yes", _) =>
-                RegistrationForm(success.username, success.firtname, success.lastname, success.email, success.phonenumber, None, success.totalamazonsales, success.amazonscore, success.retailebay, success.retailamazon, None)
-              case RegistrationForm(_, _, _, _, _, _, _, _, "yes", "no", _) =>
-                RegistrationForm(success.username, success.firtname, success.lastname, success.email, success.phonenumber, success.ebayscore, None, None, success.retailebay, success.retailamazon, success.ebayname)
+              case RegistrationForm(_, _, _, _, _, _, _, _, "no", "no", _, "no", _) =>
+                RegistrationForm(success.username, success.firtname, success.lastname, success.email, success.phonenumber, None, None, None, success.retailebay, success.retailamazon, None, success.retailfacebook, None)
+              case RegistrationForm(_, _, _, _, _, _, _, _, "no", "yes", _, "no", _) =>
+                RegistrationForm(success.username, success.firtname, success.lastname, success.email, success.phonenumber, None, success.totalamazonsales, success.amazonscore, success.retailebay, success.retailamazon, None, success.retailfacebook, None)
+              case RegistrationForm(_, _, _, _, _, _, _, _, "yes", "no", _, "no", _) =>
+                RegistrationForm(success.username, success.firtname, success.lastname, success.email, success.phonenumber, success.ebayscore, None, None, success.retailebay, success.retailamazon, success.ebayname, success.retailfacebook, None)
+              case RegistrationForm(_, _, _, _, _, _, _, _, "no", "no", _, "yes", _) =>
+                RegistrationForm(success.username, success.firtname, success.lastname, success.email, success.phonenumber, None, None, None, success.retailebay, success.retailamazon, None, success.retailfacebook, success.facebookemail)
+              case RegistrationForm(_, _, _, _, _, _, _, _, "yes", "yes", _, "yes", _) =>
+                RegistrationForm(success.username, success.firtname, success.lastname, success.email, success.phonenumber, success.ebayscore, success.totalamazonsales, success.amazonscore, success.retailebay, success.retailamazon, success.ebayname, success.retailfacebook, success.facebookemail)
               case _ => success
             }
 
@@ -99,15 +103,11 @@ class RegistrationController extends AuthAction {
     DB.withConnection { implicit c =>
 
       val id: Option[Long] =
-        SQL("insert into Userdata(username, firstname, lastname, email, phonenumber, profilepiclocation, password, ebayname) values ({username}, {firstname}, {lastname}," +
-          "{email}, {phonenumber}, {profilepiclocation}, {password}, {ebayname})")
+        SQL("insert into Userdata(username, firstname, lastname, email, phonenumber, profilepiclocation, password, ebayname, facebookemail) values ({username}, {firstname}, {lastname}," +
+          "{email}, {phonenumber}, {profilepiclocation}, {password}, {ebayname}, {facebookemail})")
           .on('username -> user.username, 'firstname -> user.firtname, 'lastname -> user.lastname, 'email -> user.email,
             'phonenumber -> user.phonenumber, 'profilepiclocation -> pictureLocation, 'password -> password.getOrElse("password"),
-            'ebayname -> user.ebayname.getOrElse("None")).executeInsert()
-
-      //      val result = SQL"insert into repcheck.User(username, email, password) values ($username, $email, $passwd)".execute()
-
-
+            'ebayname -> user.ebayname.getOrElse("None"), 'facebookemail -> user.facebookemail.getOrElse("None")).executeInsert()
     }
   }
 

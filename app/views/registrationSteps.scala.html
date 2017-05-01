@@ -169,6 +169,10 @@
                         function collapseAmazon() {
                             $("#amazon").collapse('hide');
                         }
+
+                        function collapseFacebook() {
+                            $("#facebook").collapse('hide');
+                        }
                     </script>
 
                     @b3.radio( form("retailebay"), '_inline -> true ) { implicit extraInfo =>
@@ -240,18 +244,27 @@
 
                     </div>
 
-                    <h4>Would you like to add recent transaction information?</h4>
+                    <h4>Do you have a Facebook account?</h4>
 
-                    @b3.radio( form("transactions"), '_inline -> true ) { implicit extraInfo =>
+                    @b3.radio( form("retailfacebook"), '_inline -> true ) { implicit extraInfo =>
 
                         <label class="btn btn-success">
-                            @b3.radioOption("yes", "Yes", Symbol("data-target") -> "#amazon", Symbol("data-toggle") -> "collapse")
+                            @b3.radioOption("yes", "Yes", Symbol("data-target") -> "#facebook", Symbol("data-toggle") -> "collapse")
                         </label>
                         <label class="btn btn-danger">
                         @b3.radioOption("no", "No", 'onclick -> "collapseAmazon()")
                         </label>
                     }
 
+
+                    <div id="facebook" class="collapse">
+                    @helper.inputText(
+                        form("facebookemail"),
+                        '_label -> "Enter the email address associated to your account.",
+                        'class -> "form-control",
+                        '_showConstraints -> false
+                    )
+                    </div>
 
 
 

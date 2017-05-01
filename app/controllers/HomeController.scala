@@ -22,6 +22,7 @@ class HomeController @Inject() extends AuthAction {
   def index = Action { implicit request =>
     println(request.session.data)
 
+
     if(userIsLoggedIn(request)) Ok(views.html.index(Userdata.userForm, None, false, false, loggedIn = true))
     else  Ok(views.html.index(Userdata.userForm, None, false, false, loggedIn = false))
   }

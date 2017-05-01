@@ -21,7 +21,9 @@ case class RegistrationForm(
                            amazonscore: Option[Double],
                            retailebay: String,
                            retailamazon: String,
-                           ebayname: Option[String]
+                           ebayname: Option[String],
+                           retailfacebook: String,
+                           facebookemail: Option[String]
                            )
 
 
@@ -45,7 +47,9 @@ object RegistrationForm {
       "amazonscore" -> optional(of(doubleFormat)),
       "retailebay" -> text,
       "retailamazon" -> text,
-      "ebayname" -> optional(text)
+      "ebayname" -> optional(text),
+      "retailfacebook" -> text,
+      "facebookemail" -> optional(email)
     )(RegistrationForm.apply)(RegistrationForm.unapply)
   )
 

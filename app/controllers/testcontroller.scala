@@ -72,26 +72,7 @@ class testcontroller extends AuthAction {
     )
   }
 
-  /**
-    * Display the 'new computer form'.
-    */
-  def create = Action {
-    Ok(views.html.createForm(models.Transaction.transacrionForm, ""))
-  }
 
-  /**
-    * Handle the 'new computer form' submission.
-    */
-  def save = Action { implicit request =>
-    computerForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(html.createForm(models.Transaction.transacrionForm
-        , "")),
-      computer => {
-        Computer.insert(computer)
-        Home.flashing("success" -> "Computer %s has been created".format(computer.name))
-      }
-    )
-  }
 
   /**
     * Handle computer deletion.
