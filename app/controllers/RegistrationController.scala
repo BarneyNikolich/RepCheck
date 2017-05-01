@@ -103,7 +103,7 @@ class RegistrationController extends AuthAction {
           "{email}, {phonenumber}, {profilepiclocation}, {password}, {ebayname})")
           .on('username -> user.username, 'firstname -> user.firtname, 'lastname -> user.lastname, 'email -> user.email,
             'phonenumber -> user.phonenumber, 'profilepiclocation -> pictureLocation, 'password -> password.getOrElse("password"),
-            'ebayname -> user.ebayname.getOrElse("problem with ebay name")).executeInsert()
+            'ebayname -> user.ebayname.getOrElse("None")).executeInsert()
 
       //      val result = SQL"insert into repcheck.User(username, email, password) values ($username, $email, $passwd)".execute()
 

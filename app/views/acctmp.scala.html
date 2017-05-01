@@ -1,4 +1,4 @@
-@(name: String, phone: String, email: String, profilePicture: String, ebayusername: String, currentPage: Page[(Transaction, Option[CurrentUser])], currentOrderBy: Int, currentFilter: String)(implicit flash: play.api.mvc.Flash, messages: Messages)
+@(username: String, name: String, phone: String, email: String, profilePicture: String, ebayusername: String, currentPage: Page[(Transaction, Option[CurrentUser])], currentOrderBy: Int, currentFilter: String)(implicit flash: play.api.mvc.Flash, messages: Messages, request: Request[AnyContent])
 
 <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/profile.css")">
 
@@ -25,9 +25,14 @@
         * Helper generating navigation links    *
         ****************************************@
     @link(newPage: Int, newOrderBy: Option[Int] = None) = @{
-        routes.testcontroller.list(newPage, newOrderBy.map { orderBy =>
-            if(orderBy == scala.math.abs(currentOrderBy)) -currentOrderBy else orderBy
-        }.getOrElse(currentOrderBy), currentFilter)
+
+        routes.AccountController.showAccount(username, Some(newPage), newOrderBy.map { orderBy =>
+            if(orderBy == scala.math.abs(currentOrderBy)) Some(-currentOrderBy) else Some(orderBy)
+        }.getOrElse(Some(currentOrderBy)), Some(currentFilter))
+
+//        routes.testcontroller.list(newPage, newOrderBy.map { orderBy =>
+//            if(orderBy == scala.math.abs(currentOrderBy)) -currentOrderBy else orderBy
+//        }.getOrElse(currentOrderBy), currentFilter)
 
     }
 
@@ -116,7 +121,7 @@
                         <ul class="unstyled">
                             <li><i class="icon-phone"></i> @phone </li>
                             <li><i class="icon-envelope"></i> @email</li>
-                            <li><i class="icon-globe"></i> http://jonniespratley.me</li>
+                            @*<li><i class="icon-globe"></i> http://jonniespratley.me</li>*@
                         </ul>
                     </div>
                     <div class="span6">
@@ -126,9 +131,11 @@
                             <h4>(click to view)</h4>
                             <li>
                                 @*ADD LOGIC TO SHOW OR NOT SHOW*@
-                                <a href="http://ebay.co.uk/usr/@ebayusername?/users/">
-                                <img src="/assets/images/ebayapp.jpg" class="heading-image"/>
-                                </a>
+                                @if(ebayusername != "None"){
+                                    <a href="http://ebay.co.uk/usr/@ebayusername">
+                                        <img src="/assets/images/ebayapp.jpg" class="heading-image"/>
+                                    </a>
+                                }
 
                             </li>
                             <li>
@@ -155,24 +162,24 @@
 
                     <h1>Reviews and transactions</h1>
 
+                    @if(request.session.get("loggedin").fold("")(n => n) == username) {
 
-                    <div id="actions">
-
-                        <h5>Only add if user is logged in and on his account page</h5>
-                        <a class="btn success" id="add" href="@routes.testcontroller.create()">Add a new computer</a>
-
-                    </div>
+                        <div id="actions">
+                            <a class="btn btn-success" id="add" href="@routes.AccountController.create(request.session.get("loggedin").fold("")(n => n))">
+                                Add a new computer</a>
+                        </div>
+                        <br>
+                    }
 
                     @Option(currentPage.items).filterNot(_.isEmpty).map { transactions =>
 
                     <table class="computers zebra-striped">
                         <thead>
                             <tr>
-
-                                @header(1, "User name")
-                                @header(2, "Date sold")
                                 @header(3, "Item")
-                                @header(4, "Rating")
+                                @header(6, "Rating")
+                                @header(5, "Comments")
+                                @header(4, "Date sold")
                             </tr>
                         </thead>
                         <tbody>
@@ -180,15 +187,19 @@
                         @transactions.map {
                             case (transaction, company) => {
                                 <tr>
-                                    <td><a href="@routes.testcontroller.edit(transaction.id.get)">@transaction.usernameId</a></td>
-                                    <td>
-                                    @transaction.date.map(_.format("dd MMM yyyy")).getOrElse { <em>-</em> }
-                                    </td>
+                                    @*<td><a href="@routes.testcontroller.edit(transaction.id.get)">@transaction.usernameId</a></td>*@
+
                                     <td>
                                     @transaction.item
                                     </td>
                                     <td>
                                     @transaction.rating
+                                    </td>
+                                    <td>
+                                    @transaction.comments
+                                    </td>
+                                    <td>
+                                    @transaction.date.map(_.format("dd MMM yyyy")).getOrElse { <em>-</em> }
                                     </td>
 
                                 </tr>
@@ -227,7 +238,7 @@
                     }.getOrElse {
 
                         <div class="well">
-                            <em>Nothing to display</em>
+                            <em>This user has no previous transactions.</em>
                         </div>
 
                     }

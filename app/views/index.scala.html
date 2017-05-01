@@ -1,4 +1,7 @@
-@(form: Form[Userdata], faillogin: Option[String], showSignupForm: Boolean, showLoginForm: Boolean, loggedIn: Boolean)(implicit request: Request[AnyContent], messages: Messages)
+@(myForm: Form[Userdata], faillogin: Option[String], showSignupForm: Boolean, showLoginForm: Boolean, loggedIn: Boolean)(implicit request: Request[AnyContent], messages: Messages)
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
 
 @main("RepCheck home") {
@@ -50,7 +53,7 @@
         } else {
           @*Logged in as: @request.session.get("loggedin").fold("")(n => n)*@
 
-          <a class="atag" href="@routes.AccountController.showAccount(request.session.get("loggedin").fold("")(n => n))" >
+          <a class="atag" href="@routes.AccountController.showAccount(request.session.get("loggedin").fold("")(n => n), None, None, None)" >
             <span class="glyphicon glyphicon-user nav-space"></span> Account
           </a>
           <span>  | </span>
@@ -92,11 +95,11 @@
 
           @helper.form(action = routes.LoginController.submitform(), args = 'id -> "loginform") {
               <!-- WRITE UTILITY FUNCTION TO RETURN THE CORRECT MESSAGE!! -->
-            @if(form.hasErrors) {
+            @if(myForm.hasErrors) {
 
               @if(showLoginForm) {
                 <div class="alert alert-danger" role="alert">
-                @for(error <- form.errors) {
+                @for(error <- myForm.errors) {
                   <p>@error.message</p>
                 }
                 </div>
@@ -110,9 +113,10 @@
               </div>
             }
               <!--Standard text input form. id = textInput. Show constraints shows the field must be filled.-->
+            <div class="form-group">
             <span class="glyphicon glyphicon-user"></span>
             @helper.inputText(
-              form("username"),
+              myForm("username"),
               '_label -> "Username",
               'placeholder -> "e.g. User123",
               'span -> "glyphicon glyphicon-user",
@@ -120,10 +124,13 @@
               'required -> "required",
               '_showConstraints -> false
             )
+            </div>
             @*<input class="form-control" placeholder="Password" name="password" type="password" value="" required="">*@
+
+            <div class="form-group">
             <span class="glyphicon glyphicon-eye-open"></span>
             @helper.inputText(
-              form("loginpasswd"),
+              myForm("loginpasswd"),
               '_label -> "Password",
               'class -> "form-control",
               'placeholder -> "*****************",
@@ -131,6 +138,7 @@
               'required -> "required",
               '_showConstraints -> false
             )
+            </div>
 
             <div class="checkbox">
             </div>
@@ -176,10 +184,10 @@
             </div>
           }
 
-          @if(form.hasErrors) {
+          @if(myForm.hasErrors) {
 
             <div class="alert alert-danger" role="alert">
-            @for(error <- form.errors){
+            @for(error <- myForm.errors){
               <p>@error.message</p>
             }
             </div>
@@ -187,45 +195,53 @@
           }
 
             <!--Standard text input form. id = textInput. Show constraints shows the field must be filled.-->
+          <div class="form-group">
           <span class="glyphicon glyphicon-user"></span>
           @helper.inputText(
-            form("username"),
+            myForm("username"),
             '_label -> "Username",
             'placeholder -> "e.g. User123",
             'class -> "form-control",
             'required -> "required",
             '_showConstraints -> false
           )
+          </div>
 
+          <div class="form-group">
           <span class="glyphicon glyphicon-envelope"></span>
           @helper.inputText(
-            form("email"),
+            myForm("email"),
             '_label -> "Email",
             'placeholder -> "e.g. elvis_presley@hasleftthebulding.com",
             'class -> "form-control",
             'required -> "required",
             '_showConstraints -> false
           )
+          </div>
 
           @*<input class="form-control" placeholder="Password" name="password" type="password" value="" required="">*@
+          <div class="form-group">
           <span class="glyphicon glyphicon-eye-open"></span>
-
           @helper.inputPassword(
-            form("password"),
+            myForm("password"),
             '_label -> "Password",
             'class -> "form-control",
             'required -> "required",
             '_showConstraints -> false
           )
+          </div>
 
+          <div class="form-group">
           @helper.inputPassword(
-            form("confirmpassword"),
+            myForm("confirmpassword"),
             '_label -> "Password Confirmation",
             'class -> "form-control",
             'required -> "required",
             '_showConstraints -> false
           )
+          </div>
 
+          <br>
           <button type="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-off"></span>
             Sign up
           </button>

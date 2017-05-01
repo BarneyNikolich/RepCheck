@@ -15,8 +15,13 @@ import play.api.i18n.Messages.Implicits._
   */
 class AccountController extends AuthAction {
 
-  def showAccount(name: String) = Action { implicit request =>
+  var loggedinUser: Option[String] = None
 
+  def showAccount(name: String, newPage : Option[Int], newOrder: Option[Int], newFilter: Option[String]) = Action { implicit request =>
+
+    loggedinUser = Some(request.session.get("loggedin")).getOrElse(None)
+
+    println("In method!!!" + name)
     if (userExists(name)) {
 
       CurrentUser.findByUsername(name) map { user =>
@@ -26,14 +31,14 @@ class AccountController extends AuthAction {
 
 
 
-        val page =0
-        val orderBy = 2
-        val filter = ""
-        (
-          models.Transaction.list(page = page, orderBy = orderBy, filter = ("%"+filter+"%")),
-          orderBy, filter
-        )
-        Ok(views.html.acctmp(fullname, user.phonenumber, user.email, picLocation, user.ebayname, models.Transaction.list(page = page, orderBy = orderBy, filter = ("%"+filter+"%")),
+
+        val page = newPage.getOrElse(0)
+        val orderBy = newOrder.getOrElse(2)
+        val filter = newFilter.getOrElse(name)
+
+
+
+        Ok(views.html.acctmp(user.username, fullname, user.phonenumber, user.email, picLocation, user.ebayname, models.Transaction.list(page = page, orderBy = orderBy, filter = ("%"+filter+"%")),
           orderBy, filter))
 
 
@@ -47,5 +52,40 @@ class AccountController extends AuthAction {
 
 
 
+
+  /**
+    * Display the 'new transaction form'.
+    */
+  def create(name: String) = Action {
+    Ok(views.html.addTransaction(models.Transaction.transacrionForm, name))
+  }
+
+
+  /**
+    * Handle the 'new computer form' submission.
+    */
+  def save = Action { implicit request =>
+    models.Transaction.transacrionForm.bindFromRequest.fold(
+      errors => {
+        println("TRANSACTION FORM ERROR:    " + errors)
+        BadRequest(views.html.addTransaction(errors, request.session.get("loggedin").get))
+      }
+      ,
+      success => {
+        models.Transaction.insert(success, request.session.get("loggedin").get  )
+        Redirect(routes.AccountController.showAccount(request.session.get("loggedin").get, None, None, None)).
+        flashing("success" -> "Computer %s has been created".format(success.item))
+      }
+    )
+
+//    computerForm.bindFromRequest.fold(
+//      formWithErrors => BadRequest(html.createForm(models.Transaction.transacrionForm
+//        , "")),
+//      computer => {
+//        Computer.insert(computer)
+//        Home.flashing("success" -> "Computer %s has been created".format(computer.name))
+//      }
+//    )
+  }
 
 }

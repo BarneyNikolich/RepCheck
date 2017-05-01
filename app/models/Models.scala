@@ -1,12 +1,20 @@
 package models
 
-import java.util.{Date}
+import java.util.Date
 
 import play.api.db._
 import play.api.Play.current
-
 import anorm._
 import anorm.SqlParser._
+import play.api.data.Form
+import play.api.mvc.Action
+import views.html
+
+
+
+import play.api.Play.current
+import play.api.i18n.Messages.Implicits._
+
 
 import scala.language.postfixOps
 
@@ -14,7 +22,7 @@ case class Company(id: Option[Long] = None, name: String)
 case class Computer(id: Option[Long] = None, name: String, introduced: Option[Date], discontinued: Option[Date], companyId: Option[Long])
 
 //Barn
-case class Transaction(id: Option[Long] = None, usernameId: String, item: String, date: Option[Date], comments: String, rating: Long)
+case class Transaction(id: Option[Long] = None, usernameId: Option[String], item: String, date: Option[Date], comments: String, rating: Int)
 
 /**
  * Helper for pagination.
@@ -30,17 +38,29 @@ case class Page1(transactions: List[Transaction], page: Int, offset: Long, total
 }
 
 object Transaction {
+  import play.api.data.Forms._
+  val transacrionForm = Form(
+    mapping(
+      "id" -> ignored(None:Option[Long]),
+      "usernameId" -> ignored(None:Option[String]),
+      "item" -> nonEmptyText,
+      "date" -> optional(date("yyyy-MM-dd")),
+      "comments" -> nonEmptyText,
+      "rating" -> number
+    )(Transaction.apply)(Transaction.unapply)
+  )
+
 
   /**
   * Parse a Transaction from a ResultSet
   */
   val simple = {
       get[Option[Long]]("Transaction.id") ~
-      get[String]("Transaction.usernameId") ~
+      get[Option[String]]("Transaction.usernameId") ~
       get[String]("Transaction.item") ~
       get[Option[Date]]("Transaction.date") ~
       get[String]("Transaction.comments") ~
-      get[Long]("Transaction.rating") map {
+      get[Int]("Transaction.rating") map {
       case id~usernameId~item~date~comments~rating => Transaction(id, usernameId, item, date, comments, rating)
     }
   }
@@ -120,6 +140,8 @@ object Transaction {
 
   }
 
+
+
   /**
     * Update a computer.
     *
@@ -143,29 +165,30 @@ object Transaction {
       ).executeUpdate()
     }
   }
+//
+//  INSERT INTO `repcheck`.`Transaction` (`usernameId`, `item`, `date`, `comments`, `rating`) VALUES
+//    ('tom', 'glasses', '2006-01-10 00:00:00', 'shit man', '4');
 
-  /**
-    * Insert a new computer.
-    *
-    * @param computer The computer values.
-    */
-  def insert(computer: Computer) = {
+
+  def insert(transaction: Transaction, usernameId: String) = {
     DB.withConnection { implicit connection =>
       SQL(
         """
-          insert into computer values (
-            (select next value for computer_seq),
-            {name}, {introduced}, {discontinued}, {company_id}
+          insert into repcheck.Transaction (usernameId, item, date, comments, rating) values (
+            {usernameId}, {item}, {date}, {comments}, {rating}
           )
         """
       ).on(
-        'name -> computer.name,
-        'introduced -> computer.introduced,
-        'discontinued -> computer.discontinued,
-        'company_id -> computer.companyId
+        'usernameId -> usernameId,
+        'item -> transaction.item,
+        'date -> transaction.date,
+        'comments -> transaction.comments,
+        'rating -> transaction.rating
       ).executeUpdate()
     }
   }
+
+
 
   /**
     * Delete a computer.
