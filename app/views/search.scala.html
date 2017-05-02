@@ -1,0 +1,124 @@
+@(currentPage: cheese[CurrentUser], currentOrderBy: Int, currentFilter: String, piclocation: String)(implicit flash: play.api.mvc.Flash, messages: Messages)
+
+@****************************************
+* Helper generating navigation links    *
+****************************************@
+@link(newPage: Int, newOrderBy: Option[Int] = None) = @{
+    routes.SearchController.list(newPage, newOrderBy.map { orderBy =>
+        if(orderBy == scala.math.abs(currentOrderBy)) -currentOrderBy else orderBy
+    }.getOrElse(currentOrderBy), currentFilter)
+
+}
+
+    @**********************************
+    * Helper generating table headers *
+    ***********************************@
+@header(orderBy: Int, title: String) = {
+    <th class="col@orderBy header @if(scala.math.abs(currentOrderBy) == orderBy) @{if(currentOrderBy < 0) "headerSortDown" else "headerSortUp"}">
+        <a href="@link(0, Some(orderBy))">@title</a>
+    </th>
+}
+
+@views.html.style {
+
+
+
+    <h1>@Messages("Retailers", currentPage.total)</h1>
+
+    @flash.get("success").map { message =>
+        <div class="alert-message warning">
+            <strong>Done!</strong> @message
+        </div>
+    }
+
+    <div id="actions">
+
+    @helper.form(action=routes.SearchController.list()) {
+        <input type="search" id="searchbox" name="f" value="@currentFilter" placeholder="Filter by retailers name...">
+        <input type="submit" id="searchsubmit" value="Filter by name" class="btn primary">
+    }
+
+    </div>
+
+    @Option(currentPage.items).filterNot(_.isEmpty).map { currentuser =>
+
+    <table class="computers zebra-striped">
+        <thead>
+            <tr>
+                @header(1, "Profile Picture")
+                @header(1, "Username")
+                @header(2, "First Name")
+                @header(3, "Last Name")
+                @header(5, "Ebay")
+                @header(6, "Amazon")
+                @header(6, "Facebook")
+
+            </tr>
+        </thead>
+        <tbody>
+
+        @currentuser.map {
+            case (user) => {
+                <tr>
+                    <td><a href="@routes.AccountController.showAcc(user.username)"><img width="100" height="50"src="@piclocation@user.profilepiclocation" class="img-thumbnail	"/></a></td>
+                    <td ><a href="@routes.AccountController.showAcc(user.username)">@user.username</a></td>
+                    <td>@user.firtname</td>
+                    <td>@user.lastname</td>
+                    <td>?</td>
+                    <td>?</td>
+                    <td>?</td>
+
+
+                </tr>
+            }
+        }
+
+        </tbody>
+    </table>
+
+    <div id="pagination" class="pagination">
+        <ul>
+            @currentPage.prev.map { page =>
+            <li class="prev">
+                <a href="@link(page)">&larr; Previous</a>
+            </li>
+            }.getOrElse {
+                <li class="prev disabled">
+                    <a>&larr; Previous</a>
+                </li>
+            }
+        <li class="current">
+            <a>Displaying @(currentPage.offset + 1) to @(currentPage.offset + currentuser.size) of @currentPage.total</a>
+        </li>
+            @currentPage.next.map { page =>
+            <li class="next">
+                <a href="@link(page)">Next &rarr;</a>
+            </li>
+            }.getOrElse {
+                <li class="next disabled">
+                    <a>Next &rarr;</a>
+                </li>
+            }
+        </ul>
+    </div>
+
+    }.getOrElse {
+
+        <div class="well">
+            <em>Nothing to display</em>
+        </div>
+
+    }
+
+
+
+
+
+        <!-- FOOTER -->
+    <footer>
+        <p class="pull-right"><a href="#">Back to top</a></p>
+        <p>&copy; 2017 RepCheck   <!-- &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p> -->
+    </footer>
+
+}
+

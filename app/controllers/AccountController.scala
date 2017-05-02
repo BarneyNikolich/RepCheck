@@ -17,6 +17,10 @@ class AccountController extends AuthAction {
 
   var loggedinUser: Option[String] = None
 
+  def showAcc(name: String) = Action {
+    Redirect(routes.AccountController.showAccount(name, None, None, None))
+  }
+
   def showAccount(name: String, newPage : Option[Int], newOrder: Option[Int], newFilter: Option[String]) = Action { implicit request =>
 
     loggedinUser = Some(request.session.get("loggedin")).getOrElse(None)

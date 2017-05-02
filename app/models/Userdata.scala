@@ -1,20 +1,37 @@
 package models
 
-import anorm.SqlParser.get
-import anorm.{SQL, ~}
+import anorm.SqlParser.{get, scalar}
 import play.api.Application
-import play.api.data.Form
 import play.api.data.Forms._
 import play.api.db.DB
 import play.api.libs.json.Json
 import org.mindrot.jbcrypt.BCrypt
+import anorm._
+import play.api.data.Form
 
+
+
+import scala.language.postfixOps
+
+
+
+
+
+
+
+//import play.api.Play.current
+import play.api.i18n.Messages.Implicits._
 
 
 /**
   * Created by Barn on 06/03/2017.
   */
 
+
+case class cheese[A](items: Seq[A], page: Int, offset: Long, total: Long) {
+  lazy val prev = Option(page - 1).filter(_ >= 0)
+  lazy val next = Option(page + 1).filter(_ => (offset + items.size) < total)
+}
 
 case class CurrentUser(
                       username: String,
@@ -46,6 +63,92 @@ object CurrentUser {
         CurrentUser(username, firstname, lastname, email, phonenumber, profilepiclocation, password, ebayname, facebookemail)
     }
   }
+
+//  val withTransactions = CurrentUser.simple ~ (Transaction.simple ?) map {
+//    case currentuser~transaction => (currentuser, transaction)
+//  }
+
+
+
+  def listUsers(page: Int = 0, pageSize: Int = 10, orderBy: Int = 1, filter: String = "%"): cheese[CurrentUser] = {
+
+        val offest = pageSize * page
+    implicit val app = play.api.Play.current
+
+
+    DB.withConnection { implicit connection =>
+
+      val users = SQL(
+        """
+              select * from repcheck.Userdata
+              where repcheck.Userdata.username like {filter}
+              order by {orderBy}
+              limit {pageSize} offset {offset}
+            """
+      ).on(
+        'pageSize -> pageSize,
+        'offset -> offest,
+        'filter -> filter,
+        'orderBy -> orderBy
+      ).as(CurrentUser.simple *)
+
+      val totalRows = SQL(
+        """
+              select count(*) from repcheck.Userdata
+              where repcheck.Userdata.username like {filter}
+            """
+      ).on(
+        'filter -> filter
+      ).as(scalar[Long].single)
+
+
+      cheese(users, page, offest, totalRows)
+    }
+  }
+
+
+//  def listusers(page: Int = 0, pageSize: Int = 10, orderBy: Int = 1, filter: String = "%"): cheese[(CurrentUser, Option[Transaction])] = {
+//
+//    println("IN THE LIST METHOD BEFORE SQL")
+//    val offest = pageSize * page
+//
+//    DB.withConnection { implicit connection =>
+//
+//      val users = SQL(
+//        """
+//          select * from repcheck.Userdata
+//          left join repcheck.Transaction on repcheck.Transaction.usernameId = repcheck.Userdata.username
+//          where repcheck.Userdata.username like {filter}
+//          order by {orderBy}
+//          limit {pageSize} offset {offset}
+//        """
+//      ).on(
+//        'pageSize -> pageSize,
+//        'offset -> offest,
+//        'filter -> filter,
+//        'orderBy -> orderBy
+//      ).as(CurrentUser.withTransactions *)
+//
+//
+//      println("********* --------------------->>>>>>>>>>>>>>>>>>>> " + users)
+//
+//      val totalRows = SQL(
+//        """
+//          select count(*) from repcheck.Userdata
+//          left join repcheck.Transaction on repcheck.Userdata.username = repcheck.Transaction.usernameId
+//          where repcheck.Userdata.username like {filter}
+//        """
+//      ).on(
+//        'filter -> filter
+//      ).as(scalar[Long].single)
+//
+//      println("COUNTED ROWSSS ------------->    " + totalRows)
+//
+//      cheese(users, page, offest, totalRows)
+//
+//    }
+//  }
+
 
 
 
@@ -99,6 +202,10 @@ object CurrentUser {
   }
 
 }
+
+
+
+
 
 
 case class Userdata(id: Option[Long],

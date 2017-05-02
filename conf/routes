@@ -19,7 +19,15 @@ GET     /logout                     controllers.LoginController.logout
 
 GET     /test                       controllers.HomeController.test
 GET     /rate                       controllers.HomeController.rate
+
 GET     /accounts/:uname            controllers.AccountController.showAccount(uname: String, newPage: Option[Int], newOrder: Option[Int], newFilter: Option[String])
+GET     /getaccount/                controllers.AccountController.showAcc(uname: String)
+
+GET     /search                     controllers.SearchController.showSearch()
+GET     /users                      controllers.SearchController.list(p:Int ?= 0, s:Int ?= 2, f ?= "")
+
+
+
 
 
 GET     /db                         controllers.ScalaControllerInject.index
@@ -29,7 +37,7 @@ GET     /db                         controllers.ScalaControllerInject.index
 GET     /computers                  controllers.testcontroller.list(p:Int ?= 0, s:Int ?= 2, f ?= "")
 
 # Add computer
-GET     /computers/new              controllers.AccountController.create(name: String)
+GET     /transaction/add            controllers.AccountController.create(name: String)
 POST    /computers                  controllers.AccountController.save
 
 # Edit existing computer

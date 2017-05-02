@@ -12,8 +12,16 @@ body, html {
 
 .topcorner {
     position:absolute;
-    top:0;
+    top:5px;
     right:0;
+    color: #FFFFFF;
+}
+
+.topleft {
+
+    position:absolute;
+    top:5px;
+    left:20px;
     color: #FFFFFF;
 }
 

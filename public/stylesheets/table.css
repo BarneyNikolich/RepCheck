@@ -24,11 +24,13 @@ section#main .topRight {
 
 table.computers em {
     color: #aaa;
+
 }
 
 table.computers .col3, table.computers .col4 {
     width: 10%;
     min-width: 100px;
+
 }
 
 table.computers .col5 {

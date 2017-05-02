@@ -43,8 +43,13 @@
   <div id="myCarousell" class="jumbotron jumbotron-padding">
     <!-- WRITE UTILITY FUNCTION TO RETURN THE CORRECT MESSAGE!! -->
 
+      <a href="@routes.SearchController.showSearch()">
+        <p class="topleft headertxt">Search  <span class="glyphicon glyphicon-search"></span></p>
+      </a>
 
-      <div class="topcorner">
+
+
+    <div class="topcorner">
         <p class="headertxt">
         @if(!loggedIn) {
           <a class="atag" href="" data-toggle="modal" data-target="#myModal" >

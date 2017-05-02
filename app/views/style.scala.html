@@ -12,26 +12,49 @@
     <script src="@routes.Assets.at("lib/jquery/jquery.js")" type="text/javascript"></script>
     <script src="@routes.Assets.at("lib/bootstrap/js/bootstrap.min.js")" type="text/javascript"></script>
     *************************************@
+    <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/profile.css")">
+    <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/index.css")">
+    <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.versioned("stylesheets/bootstrap.min.css")">
+
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+
+    <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.versioned("bootstrap/css/bootstrap.css")">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="@routes.Assets.versioned("bootstrap/js/bootstrap.js")" type="text/javascript"></script>
+
+
 
     <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.versioned("stylesheets/bootstrap.min.css")">
-    <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.versioned("stylesheets/table.css")">
+    @*<link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.versioned("stylesheets/table.css")">*@
 
 
 
 </head>
     <body>
 
-        <header class="topbar">
-            <h1 class="fill">
-                <a href="@routes.HomeController.index()">
-                    Play sample application &mdash; Computer database
-                </a>
-            </h1>
-        </header>
+        <div class="navbar navbar-default navbar-fixed-top  navbar-custom" role="navigation">
+            <div class="container">
+                <p><a href="@routes.HomeController.index()" class="navbar-brand white">Home</a></p>
 
+                <div class="topcorner">
+                    <p class="headertxt">
+
+
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="container">
         <section id="main">
-        @content
+        <br><br><br>
+            @content
         </section>
+        </div>
 
     </body>
 </html>

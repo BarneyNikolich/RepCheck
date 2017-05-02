@@ -20,8 +20,10 @@
 }
 
 @views.html.style {
+
+
     
-    <h1>@Messages("computers.list.title", currentPage.total)</h1>
+    <h1>@Messages("Retailers", currentPage.total)</h1>
 
     @flash.get("success").map { message =>
         <div class="alert-message warning">
@@ -32,12 +34,10 @@
     <div id="actions">
         
         @helper.form(action=routes.testcontroller.list()) {
-            <input type="search" id="searchbox" name="f" value="@currentFilter" placeholder="Filter by computer name...">
+            <input type="search" id="searchbox" name="f" value="@currentFilter" placeholder="Filter by retailers name...">
             <input type="submit" id="searchsubmit" value="Filter by name" class="btn primary">
         }
-        
-        <a class="btn success" id="add" href="">Add a new computer</a>
-        
+
     </div>
     
     @Option(currentPage.items).filterNot(_.isEmpty).map { transactions =>
@@ -45,9 +45,9 @@
         <table class="computers zebra-striped">
             <thead>
                 <tr>
-                    @header(1, "Id")
-                    @header(2, "User name")
-                    @header(3, "Date sold")
+                    @header(7, "Username")
+                    @header(8, "First Name")
+                    @header(3, "Last Name")
                     @header(5, "Item")
                 </tr>
             </thead>
