@@ -1,5 +1,5 @@
 @(username: String, name: String, phone: String, email: String, profilePicture: String, ebayusername: String, currentPage: Page[(Transaction, Option[CurrentUser])],
-        currentOrderBy: Int, currentFilter: String, fburl: String)(implicit flash: play.api.mvc.Flash, messages: Messages, request: Request[AnyContent])
+        currentOrderBy: Int, currentFilter: String, fburl: String, average: Option[Double], variance: Option[Double])(implicit flash: play.api.mvc.Flash, messages: Messages, request: Request[AnyContent])
 
 
 <html>
@@ -128,6 +128,55 @@
                 </div>
             </div>
 
+            <div id="container">
+
+                @if(average.isDefined){
+
+
+                <div class="row">
+
+                    <div class="col-sm-2">
+
+                    </div>
+
+
+
+                    <div class="col-lg-4">
+
+                        <div class="rating-block">
+                            <h2>Average user rating</h2>
+                            <h2 class="bold padding-bottom-7">@average <small>/ 5</small></h2>
+
+                            @for(i <- 1 to 5){
+                                @if(average.get > i || average.get == i){
+                                    <button type="button" class="btn btn-warning btn-sm" aria-label="Left Align">
+                                        <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                    </button>
+                                }else{
+                                    <button type="button" class="btn btn-default btn-grey btn-sm" aria-label="Left Align">
+                                        <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                    </button>
+                                }
+                            }
+
+                        </div>
+
+
+
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="rating-block">
+                            <h2>Variance:</h2>
+                            <h2 class="bold padding-bottom-7">@variance.get</h2>
+
+                        </div>
+                </div>
+
+            </div>
+
+            <br>
+                }
 
 
             <div class="well clearfix">
@@ -220,11 +269,6 @@
                         </div>
 
                     }
-
-
-
-
-
 
 
 

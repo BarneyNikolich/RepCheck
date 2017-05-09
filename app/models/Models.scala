@@ -68,7 +68,7 @@ object Transaction {
   /**
     * Parse a (Computer,Company) from a ResultSet
     */
-  val withCompany = Transaction.simple ~ (CurrentUser.simple ?) map {
+  val withUser = Transaction.simple ~ (CurrentUser.simple ?) map {
     case transaction~currentuser => (transaction, currentuser)
   }
 
@@ -84,7 +84,6 @@ object Transaction {
     */
   def list(page: Int = 0, pageSize: Int = 10, orderBy: Int = 1, filter: String = "%"): Page[(Transaction, Option[CurrentUser])] = {
 
-    println("IN THE LIST METHOD BEFORE SQL")
     val offest = pageSize * page
 
     DB.withConnection { implicit connection =>
@@ -102,25 +101,12 @@ object Transaction {
         'offset -> offest,
         'filter -> filter,
         'orderBy -> orderBy
-      ).as(Transaction.withCompany *)
+      ).as(Transaction.withUser *)
 
 
-      println("********* --------------------->>>>>>>>>>>>>>>>>>>> " + transactions)
+//      println("********* --------------------->>>>>>>>>>>>>>>>>>>> " + transactions)
 
-//      val computers = SQL(
-//        """
-//          select * from repcheck.Userdata
-//          left join repcheck.Transaction on repcheck.Userdata.username = repcheck.Transaction.username
-//          where repcheck.Userdata.username like {filter}
-//          order by {orderBy} nulls last
-//          limit {pageSize} offset {offset}
-//        """
-//      ).on(
-//        'pageSize -> pageSize,
-//        'offset -> offest,
-//        'filter -> filter,
-//        'orderBy -> orderBy
-//      ).as(Transaction.withCompany *)
+
 
       val totalRows = SQL(
         """
@@ -132,7 +118,7 @@ object Transaction {
         'filter -> filter
       ).as(scalar[Long].single)
 
-      println("COUNTED ROWSSS ------------->    " + totalRows)
+//      println("COUNTED ROWSSS ------------->    " + totalRows)
 
       Page(transactions, page, offest, totalRows)
 

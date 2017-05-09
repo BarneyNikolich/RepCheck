@@ -49,9 +49,9 @@
                 @header(1, "Username")
                 @header(2, "First Name")
                 @header(3, "Last Name")
-                @header(5, "Ebay")
+                @header(8, "Ebay")
                 @header(6, "Amazon")
-                @header(6, "Facebook")
+                @header(9, "Facebook")
 
             </tr>
         </thead>
@@ -64,11 +64,22 @@
                     <td ><a href="@routes.AccountController.showAcc(user.username)">@user.username</a></td>
                     <td>@user.firtname</td>
                     <td>@user.lastname</td>
+                    <td>
+                        @if(user.ebayname != "None"){
+                            <span class="glyphicon glyphicon-ok"></span>
+                        }else{
+                            <span class="glyphicon glyphicon-remove"></span>
+                        }
+                    </td>
                     <td>?</td>
-                    <td>?</td>
-                    <td>?</td>
+                    <td>
+                        @if(user.facebookemail != "None"){
+                            <span class="glyphicon glyphicon-ok"></span>
+                        }else{
+                            <span class="glyphicon glyphicon-remove"></span>
+                        }
 
-
+                    </td>
                 </tr>
             }
         }
