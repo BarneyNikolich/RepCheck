@@ -42,7 +42,8 @@ case class CurrentUser(
                       profilepiclocation: String,
                       password: String,
                       ebayname: String,
-                      facebookemail: String
+                      facebookemail: String,
+                      ebayscore: String
                       )
 
 object CurrentUser {
@@ -58,9 +59,10 @@ object CurrentUser {
       get[String]("Userdata.profilepiclocation") ~
       get[String]("Userdata.password") ~
       get[String]("Userdata.ebayname") ~
-      get[String]("Userdata.facebookemail")  map {
-      case username~firstname~lastname~email~phonenumber~profilepiclocation~password~ebayname~facebookemail =>
-        CurrentUser(username, firstname, lastname, email, phonenumber, profilepiclocation, password, ebayname, facebookemail)
+      get[String]("Userdata.facebookemail") ~
+      get[String]("Userdata.ebayscore")  map {
+      case username~firstname~lastname~email~phonenumber~profilepiclocation~password~ebayname~facebookemail~ebayscore =>
+        CurrentUser(username, firstname, lastname, email, phonenumber, profilepiclocation, password, ebayname, facebookemail, ebayscore)
     }
   }
 
@@ -175,7 +177,7 @@ object CurrentUser {
       val userdata = SQL("select * from repcheck.Userdata where username = {username} and password = {password}").on('username -> username, 'password -> passwd).as(CurrentUser.simple.singleOpt)
 
       userdata match {
-        case Some(CurrentUser(_, _, _, _, _, _, _, _, _)) => true
+        case Some(CurrentUser(_, _, _, _, _, _, _, _,_ ,_)) => true
         case _ => false
       }
     }
@@ -194,7 +196,7 @@ object CurrentUser {
       val userdata = SQL("select * from repcheck.Userdata where username = {username}").on('username -> username).as(CurrentUser.simple.singleOpt)
 
       userdata match {
-        case Some(CurrentUser(_, _, _, _, _, _, _, _, _)) => true
+        case Some(CurrentUser(_, _, _, _, _, _, _, _, _, _)) => true
         case _ => false
       }
     }
@@ -252,7 +254,7 @@ object Userdata {
       val userdata = SQL("select * from repcheck.Userdata where username = {username}").on('username -> username ).as(CurrentUser.simple.singleOpt)
 
         userdata match {
-        case Some(CurrentUser(_, _, _, _, _, _, haspw, _, _)) => {
+        case Some(CurrentUser(_, _, _, _, _, _, haspw, _, _, _)) => {
           BCrypt.checkpw(passwd, haspw) //returns true if password matches hash
         }
         case _ => false
@@ -266,7 +268,7 @@ object Userdata {
       val userdata = SQL("select * from repcheck.Userdata where username = {username}").on('username -> username).as(CurrentUser.simple.singleOpt)
 
       userdata match {
-        case Some(CurrentUser(_, _, _, _, _, _, _, _, _)) => true
+        case Some(CurrentUser(_, _, _, _, _, _, _, _, _, _)) => true
         case _ => false
       }
     }

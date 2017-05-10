@@ -27,9 +27,7 @@ class HomeController @Inject() extends AuthAction {
     else  Ok(views.html.index(Userdata.userForm, None, false, false, loggedIn = false))
   }
 
-  def rate = Action {
-    Ok(views.html.ratingtemplate())
-  }
+
 
 
   def test = AuthAction { implicit request =>

@@ -92,7 +92,16 @@ class RegistrationController extends AuthAction {
   def saveProfilePictureGetLocation(picture: MultipartFormData.FilePart[Files.TemporaryFile], username: String): String = {
       import java.io.File
       val photo = ImageIO.read(picture.ref.file)
-      ImageIO.write(photo, "jpg", new File("public/profilePictures/"+username+".jpg"))
+
+//      ImageIO.write(photo, "jpg", new File("/profilePictures/"+username+".jpg"))
+
+    /**
+      * Uncomment below line to work in local!!!!
+      */
+        ImageIO.write(photo, "jpg", new File("public/profilePictures/"+username+".jpg"))
+
+
+    //"profilePictures/"+username+".jpg"
       "/profilePictures/"+username+".jpg"
   }
 
@@ -103,11 +112,11 @@ class RegistrationController extends AuthAction {
     DB.withConnection { implicit c =>
 
       val id: Option[Long] =
-        SQL("insert into Userdata(username, firstname, lastname, email, phonenumber, profilepiclocation, password, ebayname, facebookemail) values ({username}, {firstname}, {lastname}," +
-          "{email}, {phonenumber}, {profilepiclocation}, {password}, {ebayname}, {facebookemail})")
+        SQL("insert into Userdata(username, firstname, lastname, email, phonenumber, profilepiclocation, password, ebayname, facebookemail, ebayScore) values ({username}, {firstname}, {lastname}," +
+          "{email}, {phonenumber}, {profilepiclocation}, {password}, {ebayname}, {facebookemail}, {ebayscore})")
           .on('username -> user.username, 'firstname -> user.firtname, 'lastname -> user.lastname, 'email -> user.email,
             'phonenumber -> user.phonenumber, 'profilepiclocation -> pictureLocation, 'password -> password.getOrElse("password"),
-            'ebayname -> user.ebayname.getOrElse("None"), 'facebookemail -> user.facebookemail.getOrElse("None")).executeInsert()
+            'ebayname -> user.ebayname.getOrElse("None"), 'facebookemail -> user.facebookemail.getOrElse("None"), 'ebayscore -> user.ebayscore.getOrElse(0)).executeInsert()
     }
   }
 

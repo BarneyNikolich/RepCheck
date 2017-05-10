@@ -18,7 +18,6 @@ POST    /register                   controllers.RegistrationController.submitReg
 GET     /logout                     controllers.LoginController.logout
 
 GET     /test                       controllers.HomeController.test
-GET     /rate                       controllers.HomeController.rate
 
 GET     /accounts/:uname            controllers.AccountController.showAccount(uname: String, newPage: Option[Int], newOrder: Option[Int], newFilter: Option[String])
 GET     /getaccount/                controllers.AccountController.showAcc(uname: String)

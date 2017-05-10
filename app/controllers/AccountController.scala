@@ -36,22 +36,64 @@ class AccountController extends AuthAction {
         val page = newPage.getOrElse(0)
         val orderBy = newOrder.getOrElse(2)
         val filter = newFilter.getOrElse(name)
+        val ebayscore = user.ebayscore
+
+
+        val transactions = models.Transaction.list(page = page, orderBy = orderBy, filter = ("%"+filter+"%"))
+
+        val total = transactions.total
 
 
         var mean: Option[Double] = None
         var variance: Option[Double] = None
 
+        var fiveCount: Option[Int] = None
+        var fourCount:  Option[Int] = None
+        var threeCount:  Option[Int] = None
+        var twoCount:  Option[Int] = None
+        var oneCount:  Option[Int] = None
+
+        var fivePercent: Option[Int] = None
+        var fourPercent:  Option[Int] = None
+        var threePercent:  Option[Int] = None
+        var twoPercent:  Option[Int] = None
+        var onePercent:  Option[Int] = None
+
+
+
+
+
+        var percentages: models.RatingData =  models.RatingData(0, 0, 0, 0, 0, None, 0 ,0)
 
         val ratingInfo = calculateVariance(name, page, orderBy, filter)
+
         if(ratingInfo.isDefined){
           mean = Some(ratingInfo.get.average)
-          variance = Some(ratingInfo.get.variance)
+          variance = Some(ratingInfo.get.variance - (ratingInfo.get.variance % 0.01))
+
+          fiveCount = Some(ratingInfo.get.fiveCount)
+          fourCount = Some(ratingInfo.get.fourCount)
+          threeCount = Some(ratingInfo.get.threeCount)
+          twoCount = Some(ratingInfo.get.twoCount)
+          oneCount = Some(ratingInfo.get.oneCount)
+
+          fivePercent = Some((fiveCount.get.toDouble / total.toDouble * 100).toInt)
+          fourPercent = Some((fourCount.get.toDouble / total.toDouble * 100).toInt)
+          threePercent = Some((threeCount.get.toDouble / total.toDouble * 100).toInt)
+          twoPercent = Some((twoCount.get.toDouble / total.toDouble * 100).toInt)
+          onePercent = Some((oneCount.get.toDouble / total.toDouble * 100).toInt)
+
+          percentages = models.RatingData(fivePercent.get, fourPercent.get, threePercent.get, twoPercent.get, onePercent.get, Some(mean.get), variance.get, total)
+
         }
 
 
-        println(mean)
-        Ok(views.html.accountPage(user.username, fullname, user.phonenumber, user.email, picLocation, user.ebayname, models.Transaction.list(page = page, orderBy = orderBy, filter = ("%"+filter+"%")),
-          orderBy, filter, getFacebookLink(user.facebookemail), mean, variance))
+
+
+
+
+        Ok(views.html.accountPage(user.username, fullname, user.phonenumber, user.email, picLocation, user.ebayname, transactions,
+          orderBy, filter, getFacebookLink(user.facebookemail), fiveCount, fourCount, threeCount, twoCount, oneCount, percentages, ebayscore))
 
 
       } getOrElse( NotFound("Couldnt find by username!") )
@@ -74,7 +116,12 @@ class AccountController extends AuthAction {
   }
 
 case class RatingData(variance: Double,
-                      average: Double
+                      average: Double,
+                      fiveCount: Int,
+                      fourCount: Int,
+                      threeCount: Int,
+                      twoCount: Int,
+                      oneCount: Int
                      )
 
   def calculateVariance(name: String, page: Int, orderBy: Int, filter: String): Option[RatingData] = {
@@ -92,18 +139,38 @@ case class RatingData(variance: Double,
 
     val mean = ratingList.sum.toDouble / ratingList.length.toDouble
 
+    var fiveCount = 0
+    var fourCount = 0
+    var threeCount = 0
+    var twoCount = 0
+    var oneCount = 0
+
 
     ratingList map { x =>
+
+      if(x == 5) {
+        fiveCount += 1
+      } else if(x == 4) {
+        fourCount += 1
+      } else if(x == 3) {
+        threeCount += 1
+      } else if(x == 2) {
+        twoCount += 1
+      } else {
+        oneCount += 1
+      }
+
+
       ratingMeanSquared += (x-mean) * (x-mean)
     }
 
     val variance: Double = ratingMeanSquared.sum / ratingMeanSquared.length.toDouble
 
-    RatingData(variance, mean)
+    RatingData(variance, mean, fiveCount, fourCount, threeCount, twoCount, oneCount)
     if(variance.toString == "NaN" || mean.toString == "NaN"){
       None
     }else {
-      Some(RatingData(variance, mean))
+      Some(RatingData(variance, mean, fiveCount, fourCount, threeCount, twoCount, oneCount))
 
     }
 

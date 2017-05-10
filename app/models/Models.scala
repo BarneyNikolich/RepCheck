@@ -20,6 +20,14 @@ import scala.language.postfixOps
 
 case class Company(id: Option[Long] = None, name: String)
 case class Computer(id: Option[Long] = None, name: String, introduced: Option[Date], discontinued: Option[Date], companyId: Option[Long])
+case class RatingData(fiveP: Int,
+                      fourP: Int,
+                      threeP: Int,
+                      twoP: Int,
+                      oneP: Int,
+                      mean: Option[Double],
+                      variance:  Double,
+                      total: Long)
 
 //Barn
 case class Transaction(id: Option[Long] = None, usernameId: Option[String], item: String, date: Option[Date], comments: String, rating: Int)
