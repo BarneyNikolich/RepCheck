@@ -68,8 +68,8 @@ class AccountController extends AuthAction {
         val ratingInfo = calculateVariance(name, page, orderBy, filter)
 
         if(ratingInfo.isDefined){
-          mean = Some(ratingInfo.get.average)
-          variance = Some(ratingInfo.get.variance - (ratingInfo.get.variance % 0.01))
+          mean = Some((math floor ratingInfo.get.average  * 100) / 100)
+          variance = Some((math floor ratingInfo.get.variance * 100) / 100)
 
           fiveCount = Some(ratingInfo.get.fiveCount)
           fourCount = Some(ratingInfo.get.fourCount)
@@ -83,7 +83,11 @@ class AccountController extends AuthAction {
           twoPercent = Some((twoCount.get.toDouble / total.toDouble * 100).toInt)
           onePercent = Some((oneCount.get.toDouble / total.toDouble * 100).toInt)
 
-          percentages = models.RatingData(fivePercent.get, fourPercent.get, threePercent.get, twoPercent.get, onePercent.get, Some(mean.get), variance.get, total)
+
+
+
+          percentages = models.RatingData(fivePercent.get, fourPercent.get, threePercent.get, twoPercent.get, onePercent.get,
+            Some(mean.get), variance.get, total)
 
         }
 
@@ -132,7 +136,7 @@ case class RatingData(variance: Double,
     var ratingList = ListBuffer[Int]()
     var ratingMeanSquared = ListBuffer[Double]()
 
-    val temp = models.Transaction.list(page, 50, orderBy = orderBy, filter=  ("%"+filter+"%"))
+    val temp = models.Transaction.list(0, 50, orderBy = 1, filter=  ("%"+filter+"%"))
     temp.items.map { transactions =>
       ratingList += transactions._1.rating
     }
@@ -203,14 +207,7 @@ case class RatingData(variance: Double,
       }
     )
 
-//    computerForm.bindFromRequest.fold(
-//      formWithErrors => BadRequest(html.createForm(models.Transaction.transacrionForm
-//        , "")),
-//      computer => {
-//        Computer.insert(computer)
-//        Home.flashing("success" -> "Computer %s has been created".format(computer.name))
-//      }
-//    )
+
   }
 
 }
